@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_DEPRECATE
 #include "items.h"
 #include <iostream>
 #include <fstream>
@@ -4846,6 +4847,11 @@ void statscreen(string cname) {
 	Player player;
 	vector<Player>plist;
 	ifstream is("players.bin");
+	if (!is) {
+		std::cout << "\nCharacter list is empty" << endl;
+		std::cout << "\nPress Enter to return to main menu..";
+		return;
+	}
 	cereal::BinaryInputArchive archive(is);
 	archive(plist);
 	auto it = find_if(plist.begin(), plist.end(), [&cname](const Player& player) {return player.getName() == cname;});
@@ -4855,13 +4861,12 @@ void statscreen(string cname) {
 		std::cout << "  =================" << endl;
 		auto index = std::distance(plist.begin(), it);
 		plist[index].displaystats();
-		std::cout << "\n  Press Enter to return to main menu..";
+		std::cout << "\n  Press Enter to return to main menu..";		
 	}
 	else {
-		std::cout << "\n\nCharacter does not exist" << endl;
+		std::cout << "\nCharacter does not exist" << endl;
 		std::cout << "\nPress Enter to return to main menu..";
 	}
-	
 }
 void deletechar(string cname) {
 	Player player;
@@ -4869,6 +4874,11 @@ void deletechar(string cname) {
 	bool flag = false;
 	{
 		ifstream is("players.bin");
+		if (!is) {
+			std::cout << "\nCharacter list is empty" << endl;
+			std::cout << "\nPress Enter to return to main menu..";
+			return;
+		}
 		cereal::BinaryInputArchive iarchive(is);
 		ofstream os("temp.bin");
 		cereal::BinaryOutputArchive oarchive(os);
@@ -4885,7 +4895,7 @@ void deletechar(string cname) {
 	std::remove("players.bin");
 	std::rename("temp.bin", "players.bin");
 	if(!flag)
-		std::cout << "\n\nCharacter does not exist" << endl;
+		std::cout << "\nCharacter does not exist" << endl;
 	std::cout << "\nPress Enter to return to main menu..";
 }
 void display_all()
@@ -4894,6 +4904,11 @@ void display_all()
 	vector<Player> plist;
 	bool flag = false;
 	ifstream is("players.bin");
+	if (!is) {
+		std::cout << "\nCharacter list is empty" << endl;
+		std::cout << "\nPress Enter to return to main menu..";
+		return;
+	}
 	cereal::BinaryInputArchive archive(is);
 	archive(plist);
 	std::cout << "\n\n\t\t\t\t\t\tPLAYER CHARACTER LIST\n\n";
@@ -4911,7 +4926,7 @@ void display_all()
 		std::cout << "  FULL NAMES\n";
 		std::cout << "  =================================================================================================================\n";
 		for (Player p : plist) {
-				p.report(true);
+			p.report(true);
 		}
 	}
 	std::cout << "\n  Press Enter to return to main menu..";
