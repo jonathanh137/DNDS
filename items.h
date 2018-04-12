@@ -1,15 +1,16 @@
 #pragma once
 #include <C:\dev\Project2\Project2\cereal\cereal.hpp>
 #include <C:\dev\Project2\Project2\cereal\archives\binary.hpp>
-#include <C:\dev\Project2\Project2\cereal\archives\xml.hpp>
 #include <C:\dev\Project2\Project2\cereal\types\base_class.hpp>
 #include <C:\dev\Project2\Project2\cereal\types\vector.hpp>
 #include <C:\dev\Project2\Project2\cereal\types\string.hpp>
 #include <C:\dev\Project2\Project2\cereal\types\unordered_set.hpp>
+#include <C:\dev\Project2\Project2\cereal\types\set.hpp>
 #include <iomanip>
 #include <string>
 #include <vector>
 #include <unordered_set>
+#include <set>
 #include <algorithm>
 using namespace std;
 

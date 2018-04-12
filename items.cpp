@@ -49,7 +49,7 @@ void Resource::setRegen(int Regen) {
 }
 void Resource::rest(int Type) {
 	if (regen == 0 || Type == regen){ //short rest Type 1 long rest Type 2
-		for (int i = 0; i < max.size(); i++)
+		for (unsigned int i = 0; i < max.size(); i++)
 			current[i] = max[i];
 	}
 }
