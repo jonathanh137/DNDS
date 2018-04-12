@@ -1,7 +1,7 @@
 #pragma once
-#include <C:\dev\Project2\Project2\cereal\cereal.hpp>
-#include <C:\dev\Project2\Project2\cereal\types\string.hpp>
-#include <C:\dev\Project2\Project2\cereal\types\memory.hpp>
+#include "..\Project2\cereal\cereal.hpp"
+#include "..\Project2\cereal\types\string.hpp"
+#include "..\Project2\cereal\types\memory.hpp"
 #include <string>
 #include <algorithm>
 #include <cctype>
