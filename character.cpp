@@ -1010,11 +1010,11 @@ string character::randTrinket() {
 		"A tiny gnome-crafted music box that plays a song you dimly remember from your childhood","A small wooden statuette of a smug halfling","A brass orb etched with strange runes","A multicolored stone disk"," A tiny silver icon of a raven","A bag containing forty-seven humanoid teeth, one of which is rotten","A shard of obsidian that always feels warm to the touch","A dragon's bony talon hanging from a plain leather necklace","A pair of old socks","A blank book whose pages refuse to hold ink, chalk, graphite, or any other substance for marking",
 		"A silver badge in the shape of a five-pointed star","A knife that belonged to a relative","A glass vial filled with nail clippings","A rectangular metal device with two tiny metal cups on one end that throws sparks when wet","A white, sequined glove sized for a human","A vest with one hundred tiny pockets","A small, weightless stone block","A tiny sketch portrait of a goblin","An empty glass vial that smells of perfume when opened","A gemstone that looks like a lump of coal when examined by anyone but you",
 		"A scrap of cloth from an old banner","A rank insignia from a lost legionnaire","A tiny silver bell without a clapper","A mechanical canary inside a gnomish lamp","A tiny chest carved to look like it has numerous feet on the bottom","A dead sprite inside a clear glass bottle","A metal can that has no opening but sounds as if it is filled with liquid, sand, spiders, or broken glass (your choice)","A glass orb filled with water, in which swims a clockwork goldfish","A silver spoon with an M engraved on the handle","A whistle made from gold-colored wood",
-		"A dead scarab beetle the size of your hand","Two toy soldiers, one with a missing head","A small box filled with different-sized buttons","A candle that can't be lit","A tiny cage with no door","An old key","An indecipherable treasure map","A hilt from a broken sword","A rabbit's foot","A glass eye",
-		"A cameo carved in the likeness of a hideous person","A silver skull the size of a coin","An alabaster mask","A pyramid of sticky black incense that smells very bad","A nightcap that, when worn, gives you pleasant dreams","A single caltrop made from bone","A gold monocle frame without the lens","A 1-inch cube, each side painted a different color","A crystal knob from a door","A small packet filled with pink dust",
+		"A dead scarab beetle the size of your hand","Two toy soldiers, one with a missing head","A small box filled with different-sized buttons","A candle that can't be lit \b","A tiny cage with no door","An old key","An indecipherable treasure map","A hilt from a broken sword \b","A rabbit's foot","A glass eye",
+		"A cameo carved in the likeness of a hideous person","A silver skull the size of a coin","An alabaster mask","A pyramid of sticky black incense that smells very bad","A nightcap that, when worn, gives you pleasant dreams","A single caltrop made from bone","A gold monocle frame without the lens","A 1-inch cube, each side painted a different color","A crystal knob from a door \b","A small packet filled with pink dust",
 		"A fragment of a beautiful song, written as musical notes on two pieces of parchment","A silver teardrop earring made from a real teardrop","The shell of an egg painted with scenes of human misery in disturbing detail","A fan that, when unfolded, shows a sleeping cat","A set of bone pipes","A four-leaf clover pressed inside a book discussing manners and etiquette","A sheet of parchment upon which is drawn a complex mechanical contraption","An ornate scabbard that fits no blade you have found so far","An invitation to a party where a murder happened","A bronze pentacle with an etching of a rat's head in its center",
 		"A purple handkerchief embroidered with the name of a powerful archmage","Half of a floorplan for a temple, castle, or some other structure","A bit of folded cloth that, when unfolded, turns into a stylish cap","A receipt of deposit at a bank in a far-flung city","A diary with seven missing pages","An empty silver snuffbox bearing an inscription on the surface that says \"dreams\"","An iron holy symbol devoted to an unknown god","A book that tells the story of a legendary hero's rise and fall, with the last chapter missing","A vial of dragon blood","An ancient arrow of elven design",
-		"A needle that never bends","An ornate brooch of dwarven design","An empty wine bottle bearing a pretty label that says, \"The Wizard of Wines Winery, Red Dragon Crush, 331422-W\"","A mosaic tile with a multicolored, glazed surface","A petrified mouse","A black pirate flag adorned with a dragon's skull and crossbones","A tiny mechanical crab or spider that moves about when it's not being observed","A glass jar containing lard with a label that reads, \"Griffon Grease\"","A wooden box with a ceramic bottom that holds a living worm with a head on each end of its body","A metal urn containing the ashes of a hero" };
+		"A needle that never bends","An ornate brooch of dwarven design","An empty wine bottle bearing a pretty label that says, \"The Wizard of Wines Winery, Red Dragon Crush, 331422-W\"","A mosaic tile with a multicolored, glazed surface","A petrified mouse","A black pirate flag adorned with a dragon's skull and crossbones","A tiny mechanical crab or spider that moves about when it's not being observed","A glass jar containing lard with a label that reads, \"Griffon Grease\"","A wooden box with a ceramic bottom that holds a living worm with a head on each end of its body","A metal urn containing the ashes of a hero" }; // the \b is for strings that were size 26 which doesn't seems to want to work with reading back from file
 	string text = "Lucky Charm: ";
 	int index = rand() % 100;
 	if (index == 46) {
@@ -1119,36 +1119,107 @@ unordered_set<Tool>::iterator character::findTool(string tool) {
 	unordered_set<Tool>::iterator result = find_if(toolInv.begin(), toolInv.end(), find_by_name<Tool>(tool));
 	return result;
 }
-bool character::spellLookup(string name) {
+bool character::spellLookup(string name, spellAbility sA) {
 	string temp = name;
 	temp.erase(std::remove_if(temp.begin(), temp.end(), std::isspace), temp.end());
 	temp = totitle(temp);
 	pair<set<shared_ptr<Spell>>::iterator, bool> flag;
 	switch (name_to_Spells(temp)) {
 	case acidsplash:
-		flag = spellList.emplace(new AcidSplash());
+		flag = spellList.emplace(new AcidSplash(sA));
 		break;
 	case bladeward:
 		flag = spellList.emplace(new BladeWard());
 		break;
 	case chilltouch:
-		flag = spellList.emplace(new ChillTouch());
+		flag = spellList.emplace(new ChillTouch(sA));
 		break;
 	case dancinglights:
 		flag = spellList.emplace(new DancingLights());
 		break;
+	case druidcraft:
+		flag = spellList.emplace(new Druidcraft());
+		break;
+	case eldritchblast:
+		flag = spellList.emplace(new EldritchBlast(sA));
+		break;
+	case firebolt:
+		flag = spellList.emplace(new FireBolt(sA));
+		break;
+	case friends:
+		flag = spellList.emplace(new Friends());
+		break;
+	case guidance:
+		flag = spellList.emplace(new Guidance());
+		break;
+	case light:
+		flag = spellList.emplace(new Light(sA));
+		break;
+	case magehand:
+		flag = spellList.emplace(new MageHand());
+		break;
+	case mending:
+		flag = spellList.emplace(new Mending());
+		break;
+	case message:
+		flag = spellList.emplace(new Message());
+		break;
+	case minorillusion:
+		flag = spellList.emplace(new MinorIllusion(sA));
+		break;
+	case poisonspray:
+		flag = spellList.emplace(new PoisonSpray(sA));
+		break;
+	case prestidigitation:
+		flag = spellList.emplace(new Prestidigitation());
+		break;
+	case produceflame:
+		flag = spellList.emplace(new ProduceFlame(sA));
+		break;
+	case rayoffrost:
+		flag = spellList.emplace(new RayofFrost(sA));
+		break;
+	case resistance:
+		flag = spellList.emplace(new Resistance());
+		break;
+	case sacredflame:
+		flag = spellList.emplace(new SacredFlame(sA));
+		break;
+	case shillelagh:
+		flag = spellList.emplace(new Shillelagh(sA));
+		break;
+	case shockinggrasp:
+		flag = spellList.emplace(new ShockingGrasp(sA));
+		break;
+	case sparethedying:
+		flag = spellList.emplace(new SparetheDying());
+		break;
+	case thaumaturgy:
+		flag = spellList.emplace(new Thaumaturgy());
+		break;
+	case thornwhip:
+		flag = spellList.emplace(new ThornWhip(sA));
+		break;
+	case truestrike:
+		flag = spellList.emplace(new TrueStrike());
+		break;
+	case viciousmockery:
+		flag = spellList.emplace(new ViciousMockery(sA));
+		break;
 	default:
-		cout << "Spell not found" << endl;
+		cout << "Spell not found";
 		return false;
 		break;
 	}
-	if (!flag.second)
+	if (!flag.second) {
+		cout << "Spell already known";
 		return false;
+	}
 	return true;
 }
 
 int character::calcmod(int abscore) {
-	int mod = floor((float)(abscore - 10) / 2.0f);
+	int mod = (int)floor((float)(abscore - 10) / 2.0f);
 	return mod;
 }
 void character::listInv() {

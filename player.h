@@ -1,5 +1,6 @@
 #pragma once
 #include "character.h"
+#include <iostream>
 
 class Player : public character {
 protected:
@@ -53,7 +54,18 @@ public:
 	void setHair(string);
 	void setSpec(string);
 
+	void bardSpells();
+	void bardCantrips(int);
+	void clericSpells();
+	void clericCantrips(int);
+	void druidSpells();
+	void druidCantrips(int);
 	void sorcererSpells();
+	void sorcererCantrips(int);
+	void warlockSpells();
+	void warlockCantrips(int);
+	void wizardSpells();
+	void wizardCantrips(int);
 
 	void addCarry(float);
 	void classRoll(int[], bool);

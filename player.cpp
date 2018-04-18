@@ -785,7 +785,32 @@ void Player::addfeats() {
 			temp = addfeature("Mage Slayer", 7, "* When a creature within 5 feet of you casts a spell, you can use your reaction to make a melee weapon attack against that creature.\n* When you damage a creature that is concentrating on a spell, that creature has disadvantage on the saving throw it makes to maintain its concentration.\n* You have advantage on saving throws against spells cast by creatures within 5 feet of you.");
 			break;
 		case 22:
-			temp = addfeature("Magic Initiate", 7, "Choose a class: bard, cleric, druid, sorcerer, warlock, or wizard. You learn two cantrips of your choice from that class's spell list.\nIn addition, choose one 1st-level spell from that same list. You learn that spell and can cast it at its lowest level. Once you cast it, you must finish a long rest before you can cast it again.\nYour spellcasting ability for these spells depends on the class you chose : Charisma for bard, sorcerer, or warlock; Wisdom for cleric or druid: or Intelligence for wizard.");
+			temp = addfeature("Magic Initiate", 7, "Choose a class: bard, cleric, druid, sorcerer, warlock, or wizard. You learn two cantrips of your choice from that class's spell list.(added)\nIn addition, choose one 1st-level spell from that same list. You learn that spell and can cast it at its lowest level. Once you cast it, you must finish a long rest before you can cast it again.\nYour spellcasting ability for these spells depends on the class you chose : Charisma for bard, sorcerer, or warlock; Wisdom for cleric or druid: or Intelligence for wizard.");
+			cout << "\nChoose class spell list:\n  Bard(1)\n  Cleric(2)\n  Druid(3)\n  Sorcerer(4)\n  Warlock(5)\n  Wizard(6)" << endl;
+			selector = intValid(7);
+			switch (selector) {
+			case 1:
+				bardCantrips(2);
+				break;
+			case 2:
+				clericCantrips(2);
+				break;
+			case 3:
+				druidCantrips(2);
+				break;
+			case 4:
+				sorcererCantrips(2);
+				break;
+			case 5:
+				warlockCantrips(2);
+				break;
+			case 6:
+				wizardCantrips(2);
+				break;
+			default:
+				cout << "Invalid selection "<< endl;
+				break;
+			}
 			break;
 		case 23:
 			temp = addfeature("Martial Adept", 7, "* You learn two maneuvers of your choice from among those available to the Battle Master archetype in the fighter class. If a maneuver you use requires your target to make a saving throw to resist the maneuver's effects, the saving throw DC equals 8 + your proficiency bonus + your Strength or Dexterity modifier(your choice).(added)\n* If you already have superiority dice, you gain one more; otherwise, you have one superiority die, which is a d6. This die is used to fuel your maneuvers. A superiority die is expended when you use it. You regain your expended superiority dice when you finish a short or long rest.(added)");
@@ -977,8 +1002,58 @@ void Player::addfeats() {
 			is_in = find_if(classfeatures.begin(), classfeatures.end(), find_by_name<Feature>("Spellcasting")) != classfeatures.end();
 			if (!is_in)
 				is_in = find_if(classfeatures.begin(), classfeatures.end(), find_by_name<Feature>("Pact Magic")) != classfeatures.end();
-			if (is_in)
-				temp = addfeature("Spell Sniper", 7, "* When you cast a spell that requires you to make an attack roll, the spell's range is doubled.\n* Your ranged spell attacks ignore half cover and three-quarters cover.\n* You learn one cantrip that requires an attack roll. Choose the cantrip from the bard, cleric, druid, sorcerer, warlock, or wizard spell list. Your spellcasting ability for this cantrip depends on the spell list you chose from: Charisma for bard, sorcerer, or warlock; Wisdom for cleric or druid; or Intelligence for wizard.");
+			if (is_in) {
+				vector<string> cantrip;
+				spellAbility sA;
+				temp = addfeature("Spell Sniper", 7, "* When you cast a spell that requires you to make an attack roll, the spell's range is doubled.\n* Your ranged spell attacks ignore half cover and three-quarters cover.\n* You learn one cantrip that requires an attack roll. Choose the cantrip from the bard, cleric, druid, sorcerer, warlock, or wizard spell list. Your spellcasting ability for this cantrip depends on the spell list you chose from: Charisma for bard, sorcerer, or warlock; Wisdom for cleric or druid; or Intelligence for wizard.(added)");
+				while (cantrip.size() == 0) {
+					cout << "\nChoose class spell list:\n  Bard(1)\n  Cleric(2)\n  Druid(3)\n  Sorcerer(4)\n  Warlock(5)\n  Wizard(6)" << endl;
+					selector = intValid(7);
+					switch (selector) {
+					case 1: //bard
+						cout << "Bards do not have any cantrips with an attack roll..Choose again" << endl;
+						//sA = CHA;
+						break;
+					case 2: // cleric
+						cout << "Clerics do not have any cantrips with an attack roll..Choose again" << endl;
+						//sA = WIS;
+						break;
+					case 3: // druid
+						cantrip = { "Produce Flame","Thorn Whip" };
+						sA = WIS;
+						break;
+					case 4: // sorcerer
+						cantrip = { "Chill Touch","Fire Bolt","Ray of Frost","Shocking Grasp" };
+						sA = CHA;
+						break;
+					case 5: // warlock
+						cantrip = { "Chill Touch","Eldritch Blast" };
+						sA = CHA;
+						break;
+					case 6: // wizard
+						cantrip = { "Chill Touch","Fire Bolt","Ray of Frost","Shocking Grasp" };
+						sA = INTEL;
+						break;
+					default:
+						cout << "Invalid selection" << endl;
+						break;
+					}
+				}
+				int ctr = 1;
+				bool flag;
+				while (ctr <= 1) {
+					flag = false;
+					std::cout << "\nChoose a cantrip(" << ctr << "/1):" << endl;
+					for (unsigned int i = 0; i < cantrip.size(); i++)
+						std::cout << "  " << cantrip[i] << "(" << i + 1 << ")" << endl;
+					int selector = intValid(cantrip.size() + 1);
+					flag = spellLookup(cantrip[selector - 1], sA);
+					if (!flag)
+						std::cout << "..choose again" << endl;
+					else
+						ctr++;
+				}
+			}
 			else {
 				std::cout << "Requirement not met" << endl;
 				metreq = false;
@@ -1345,7 +1420,7 @@ void Player::setBG(int BG, bool money) {
 				addGear("Enemy trophy: Dagger");
 				break;
 			case 2:
-				addGear("Enemy trophy: Broken blade");
+				addGear("Enemy trophy: Broken blade \b"); // the \b is for strings that were size 26 which doesn't seems to want to work with reading back from file
 				break;
 			case 3:
 				addGear("Enemey trophy: Banner piece");
@@ -1410,26 +1485,171 @@ void Player::setSpec(string nSpec) {
 	special = nSpec;
 }
 
-void Player::sorcererSpells() {
-	vector<string> list = { "Acid Splash","Blade Ward","Chill Touch","Dancing Lights","Fire Bolt","Friends","Light","Mage Hand","Mending","Message","Minor Illusion","Poison Spray","Prestidigitation","Ray of Frost","Shocking Grasp","True Strike" };
-	string temp;
-	bool flag;
-	int ctr = 1;
+void Player::bardSpells() {
 	switch (getLevel()) {
 	case 1:
-		while (ctr < 5) {
-			flag = false;
-			std::cout << "\nChoose a cantrip(" << ctr << "/4): " << endl;
-			for (int i = 0; i < 16; i++)
-				std::cout << "  " << list[i] << "(" << i + 1 << ")" << endl;
-			int selector = intValid(17);
-			flag = spellLookup(list[selector - 1]);
-			if (!flag)
-				std::cout << "Cannot add chosen spell..choose again" << endl;
-			else
-				ctr++;
-		}
+		bardCantrips(2);
 		break;
+	default:
+		cout << "Invalid Level" << endl;
+		break;
+	}
+}
+void Player::bardCantrips(int itr) {
+	vector<string> cantrip = { "Blade Ward","Dancing Lights","Friends","Light","Mage Hand","Mending","Message","Minor Illusion","Prestidigitation","True Strike","Vicious Mockery" };
+	int ctr = 1;
+	bool flag;
+	while (ctr <= itr) {
+		flag = false;
+		std::cout << "\nChoose a cantrip(" << ctr << "/" << itr << "):" << endl;
+		for (unsigned int i = 0; i < cantrip.size(); i++)
+			std::cout << "  " << cantrip[i] << "(" << i + 1 << ")" << endl;
+		int selector = intValid(cantrip.size() + 1);
+		flag = spellLookup(cantrip[selector - 1], CHA);
+		if (!flag)
+			std::cout << "..choose again" << endl;
+		else
+			ctr++;
+	}
+}
+
+void Player::clericSpells() {
+	switch (getLevel()) {
+	case 1:
+		clericCantrips(3);
+		break;
+	default:
+		cout << "Invalid Level" << endl;
+		break;
+	}
+}
+void Player::clericCantrips(int itr) {
+	vector<string> cantrip = { "Guidance","Light","Mending","Resistance","Sacred Flame","Spare the Dying","Thaumaturgy" };
+	int ctr = 1;
+	bool flag;
+	while (ctr <= itr) {
+		flag = false;
+		std::cout << "\nChoose a cantrip(" << ctr << "/" << itr << "):" << endl;
+		for (unsigned int i = 0; i < cantrip.size(); i++)
+			std::cout << "  " << cantrip[i] << "(" << i + 1 << ")" << endl;
+		int selector = intValid(cantrip.size() + 1);
+		flag = spellLookup(cantrip[selector - 1], WIS);
+		if (!flag)
+			std::cout << "..choose again" << endl;
+		else
+			ctr++;
+	}
+}
+
+void Player::druidSpells() {
+	switch (getLevel()) {
+	case 1:
+		druidCantrips(2);
+		break;
+	default:
+		cout << "Invalid Level" << endl;
+		break;
+	}
+}
+void Player::druidCantrips(int itr) {
+	vector<string> cantrip = { "Druidcraft","Guidance","Mending","Poison Spray","Produce Flame","Resistance","Shillelagh","Thorn Whip" };
+	int ctr = 1;
+	bool flag;
+	while (ctr <= itr) {
+		flag = false;
+		std::cout << "\nChoose a cantrip(" << ctr << "/" << itr << "):" << endl;
+		for (unsigned int i = 0; i < cantrip.size(); i++)
+			std::cout << "  " << cantrip[i] << "(" << i + 1 << ")" << endl;
+		int selector = intValid(cantrip.size() + 1);
+		flag = spellLookup(cantrip[selector - 1], WIS);
+		if (!flag)
+			std::cout << "..choose again" << endl;
+		else
+			ctr++;
+	}
+}
+
+void Player::sorcererSpells() {
+	switch (getLevel()) {
+	case 1:
+		sorcererCantrips(4);
+		break;
+	default:
+		cout << "Invalid Level" << endl;
+		break;
+	}
+}
+void Player::sorcererCantrips(int itr) {
+	vector<string> cantrip = { "Acid Splash","Blade Ward","Chill Touch","Dancing Lights","Fire Bolt","Friends","Light","Mage Hand","Mending","Message","Minor Illusion","Poison Spray","Prestidigitation","Ray of Frost","Shocking Grasp","True Strike" };
+	int ctr = 1;
+	bool flag;
+	while (ctr <= itr) {
+		flag = false;
+		std::cout << "\nChoose a cantrip(" << ctr << "/" << itr << "):" << endl;
+		for (unsigned int i = 0; i < cantrip.size(); i++)
+			std::cout << "  " << cantrip[i] << "(" << i + 1 << ")" << endl;
+		int selector = intValid(cantrip.size() + 1);
+		flag = spellLookup(cantrip[selector - 1], CHA);
+		if (!flag)
+			std::cout << "..choose again" << endl;
+		else
+			ctr++;
+	}
+}
+
+void Player::warlockSpells() {
+	switch (getLevel()) {
+	case 1:
+		warlockCantrips(2);
+		break;
+	default:
+		cout << "Invalid Level" << endl;
+		break;
+	}
+}
+void Player::warlockCantrips(int itr) {
+	vector<string> cantrip = { "Blade Ward","Chill Touch","Eldritch Blast","Friends","Mage Hand","Minor Illusion","Poison Spray","Prestidigitation","True Strike" };
+	int ctr = 1;
+	bool flag;
+	while (ctr <= itr) {
+		flag = false;
+		std::cout << "\nChoose a cantrip(" << ctr << "/" << itr << "):" << endl;
+		for (unsigned int i = 0; i < cantrip.size(); i++)
+			std::cout << "  " << cantrip[i] << "(" << i + 1 << ")" << endl;
+		int selector = intValid(cantrip.size() + 1);
+		flag = spellLookup(cantrip[selector - 1], CHA);
+		if (!flag)
+			std::cout << "..choose again" << endl;
+		else
+			ctr++;
+	}
+}
+
+void Player::wizardSpells() {
+	switch (getLevel()) {
+	case 1:
+		wizardCantrips(3);
+		break;
+	default:
+		cout << "Invalid Level" << endl;
+		break;
+	}
+}
+void Player::wizardCantrips(int itr) {
+	vector<string> cantrip = { "Acid Splash","Blade Ward","Chill Touch","Dancing Lights","Fire Bolt","Friends","Light","Mage Hand","Mending","Message","Minor Illusion","Poison Spray","Prestidigitation","Ray of Frost","Shocking Grasp","True Strike" };
+	int ctr = 1;
+	bool flag;
+	while (ctr <= itr) {
+		flag = false;
+		std::cout << "\nChoose a cantrip(" << ctr << "/" << itr <<"):" << endl;
+		for (unsigned int i = 0; i < cantrip.size(); i++)
+			std::cout << "  " << cantrip[i] << "(" << i + 1 << ")" << endl;
+		int selector = intValid(cantrip.size() + 1);
+		flag = spellLookup(cantrip[selector - 1], INTEL);
+		if (!flag)
+			std::cout << "..choose again" << endl;
+		else
+			ctr++;
 	}
 }
 
@@ -1522,6 +1742,7 @@ void Player::classRoll(int rolls[], bool money) {
 		addresource("Spell Slots(Spellcasting)", 2, 2, 1);
 		addfeature("Bardic Inspiration(d6)", 0, "You can inspire others through stirring words or music. To do so, you use a bonus action on your turn to choose one creature other than yourself within 60 feet of you who can hear you. That creature gains one Bardic Inspiration die, a d6.\nOnce within the next 10 minutes, the creature can roll the die and add the number rolled to one ability check, attack roll, or saving throw it makes. The creature can wait until after it rolls the d20 before deciding to use the Bardic Inspiration die, but must decide before the DM says whether the roll succeeds or fails. Once the Bardic Inspiration die is rolled, it is lost. A creature can have only one Bardic Inspiration die at a time.\nYou can use this feature a number of times equal to your Charisma modifier(a minimum of once). You regain any expended uses when you finish a long rest.\nYour Bardic Inspiration die changes when you reach certain levels in this class. The die becomes a d8 at 5th level, a d10 at 10th level, and a d12 at 15th level.(added)");
 		addresource("Bardic Inspiration", calcmod(getcha()), 2);
+		bardSpells();
 		if (money) {
 			addGp(dRoll(5, 4) * 10);
 		}
@@ -1590,13 +1811,15 @@ void Player::classRoll(int rolls[], bool money) {
 			break;
 		case 3:
 			addfeature("Divine Domain: Light", 0);
-			addfeature("Bonus Cantrip", 0, "When you choose this domain at 1st level, you gain the light cantrip if you don't already know it.");
+			addfeature("Bonus Cantrip", 0, "When you choose this domain at 1st level, you gain the light cantrip if you don't already know it.(added)");
+			spellLookup("Light", WIS);
 			addfeature("Warding Flare", 0, "Also at 1st level, you can interpose divine light between yourself and an attacking enemy. When you are attacked by a creature within 30 feet of you that you can see, you can use your reaction to impose disadvantage on the attack roll, causing light to flare before the attacker before it hits or misses. An attacker that can't be blinded is immune to this feature.\nYou can use this feature a number of times equal to your Wisdom modifier(a minimum of once). You regain all expended uses when you finish a long rest.(added)");
 			addresource("Warding Flare", calcmod(getwis()), 2);
 			break;
 		case 4:
 			addfeature("Divine Domain: Nature", 0);
-			addfeature("Acolyte of Nature", 0, "At 1st level, you learn one druid cantrip of your choice.\nYou also gain proficiency in one of the following skills of your choice: Animal Handling, Nature, or Survival.(added)");
+			addfeature("Acolyte of Nature", 0, "At 1st level, you learn one druid cantrip of your choice.(added)\nYou also gain proficiency in one of the following skills of your choice: Animal Handling, Nature, or Survival.(added)");
+			druidCantrips(1);
 			addfeature("Bonus Proficiency", 0, "Also at 1st level, you gain proficiency with heavy armor.(added)");
 			addfeature("Heavy armor", 5);
 			break;
@@ -1621,6 +1844,7 @@ void Player::classRoll(int rolls[], bool money) {
 			addresource("War Priest", calcmod(getwis()), 2);
 			break;
 		}
+		clericSpells();
 		if (money) {
 			addGp(dRoll(5, 4) * 10);
 		}
@@ -1717,6 +1941,7 @@ void Player::classRoll(int rolls[], bool money) {
 		addfeature("Druidic", 3);
 		addfeature("Spellcasting", 0, "* Cantrips\n* Preparing and Casting Spells\n* Spellcasting Ability(Wisdom)\n* Ritual Casting\n* Spellcasting Focus(Druidic focus)");
 		addresource("Spell Slots(Spellcasting)", 2, 2, 1);
+		druidSpells();
 		if (money) {
 			addGp(dRoll(2, 4) * 10);
 		}
@@ -1793,8 +2018,8 @@ void Player::classRoll(int rolls[], bool money) {
 			addfeature("Fighting Style: Great Weapon Fighting", 0, "When you roll a 1 or 2 on a damage die for an attack you make with a melee weapon that you are wielding with two hands, you can reroll the die and must use the new roll, even if the new roll is a 1 or a 2. The weapon must have the two-handed or versatile property for you to gain this benefit.");
 			break;
 		case 5:
-			addfeature("Fighting Style: Protection", 0, "When a creature you can see attacks a target other than you that is within 5 feet of you, you can use your reaction to impose disadvantage on the attack roll. You must be wielding a shield.");
-			break;
+			addfeature("Fighting Style: Protection \b", 0, "When a creature you can see attacks a target other than you that is within 5 feet of you, you can use your reaction to impose disadvantage on the attack roll. You must be wielding a shield."); // the \b is for strings that were size 26 which doesn't seems to want to work with reading back from file
+			break; 
 		case 6:
 			addfeature("Fighting Style: Two-Weapon Fighting", 0, "When you engage in two-weapon fighting, you can add your ability modifier to the damage of the second attack.");
 			break;
@@ -1999,7 +2224,7 @@ void Player::classRoll(int rolls[], bool money) {
 		selector = intValid(15);
 		switch (selector) {
 		case 1:
-			addfeature("Favored Enemy: Aberrations", 0, "Beginning at 1st level, you have significant experience studying, tracking, hunting, and even talking to a certain type of enemy.\nChoose a type of favored enemy: aberrations, beasts, celestials, constructs, dragons, elementals, fey, fiends, giants, monstrosities, oozes, plants, or undead.\nAlternatively, you can select two races of humanoid(such as gnolls and orcs) as favored enemies.\nYou have advantage on Wisdom(Survival) checks to track your favored enemies, as well as on Intelligence checks to recall information about them.\nWhen you gain this feature, you also learn one language of your choice that is spoken by your favored enemies, if they speak one at all.(added)\nYou choose one additional favored enemy, as well as an associated language, at 6th and 14th level. As you gain levels, your choices should reflect the types of monsters you have encountered on your adventures.");
+			addfeature("Favored Enemy: Aberrations \b", 0, "Beginning at 1st level, you have significant experience studying, tracking, hunting, and even talking to a certain type of enemy.\nChoose a type of favored enemy: aberrations, beasts, celestials, constructs, dragons, elementals, fey, fiends, giants, monstrosities, oozes, plants, or undead.\nAlternatively, you can select two races of humanoid(such as gnolls and orcs) as favored enemies.\nYou have advantage on Wisdom(Survival) checks to track your favored enemies, as well as on Intelligence checks to recall information about them.\nWhen you gain this feature, you also learn one language of your choice that is spoken by your favored enemies, if they speak one at all.(added)\nYou choose one additional favored enemy, as well as an associated language, at 6th and 14th level. As you gain levels, your choices should reflect the types of monsters you have encountered on your adventures."); // the \b is for strings that were size 26 which doesn't seems to want to work with reading back from file
 			addfeature("Deep Speech", 3);
 			break;
 		case 2:
@@ -2405,12 +2630,12 @@ void Player::classRoll(int rolls[], bool money) {
 		selector = intValid(4);
 		switch (selector) {
 		case 1:
-			addfeature("Otherworldly Patron: Archfey", 0);
+			addfeature("Otherworldly Patron: Archfey", 0);	
 			addfeature("Fey Presence", 0, "Starting at 1st level, your patron bestows upon you the ability to project the beguiling and fearsom e presence of the fey. As an action, you can cause each creature in a 10-foot cube originating from you to make a Wisdom saving throw against your warlock spell save DC. The creatures that fail their saving throws are all charmed or frightened by you(your choice) until the end of your next turn.\nOnce you use this feature, you can't use it again until you finish a short or long rest.(added)");
 			addresource("Fey Presence", 1, 0);
 			break;
 		case 2:
-			addfeature("Otherworldly Patron: Fiend", 0);
+			addfeature("Otherworldly Patron: Fiend \b", 0); // the \b is for strings that were size 26 which doesn't seems to want to work with reading back from file
 			addfeature("Dark One's Blessing", 0, "Starting at 1st level, when you reduce a hostile creature to 0 hit points, you gain temporary hit points equal to your Charisma modifier + your warlock level(minimum of 1).");
 			break;
 		case 3:
@@ -2420,6 +2645,7 @@ void Player::classRoll(int rolls[], bool money) {
 		}
 		addfeature("Pact Magic", 0, "* Cantrips\n* Spell Slots\n* Spells Known of 1st Level and Higher\n* Spellcasting Ability(Charisma)\n* Spellcasting Focus(Arcane focus)");
 		addresource("Spell Slots(Pact Magic)", 1, 0, 1);
+		warlockSpells();
 		if (money) {
 			addGp(dRoll(4, 4) * 10);
 		}
@@ -2499,6 +2725,7 @@ void Player::classRoll(int rolls[], bool money) {
 		addfeature("Spellcasting", 0, "* Cantrips\n* Spellbook\n* Preparing and Casting Spells\n* Spellcasting Ability(Intelligence)\n* Ritual Casting\n* Spellcasting Focus(Arcane focus)");
 		addresource("Spell Slots(Spellcasting)", 2, 2, 1);
 		addfeature("Arcane Recovery", 0, "You have learned to regain some of your magical energy by studying your spellbook. Once per day when you finish a short rest, you can choose expended spell slots to recover. The spell slots can have a combined level that is equal to or less than half your wizard level(rounded up), and none of the slots can be 6th level or higher.\nFor example, if you’re a 4th-level wizard, you can recover up to two levels worth of spell slots. You can recover either a 2nd-level spell slot or two 1st-level spell slots.");
+		wizardSpells();
 		if (money) {
 			addGp(dRoll(4, 4) * 10);
 		}
@@ -2656,7 +2883,8 @@ void Player::insertRace(int index) {
 			addfeature("Shortsword", 4);
 			addfeature("Shortbow", 4);
 			addfeature("Longbow", 4);
-			addfeature("Cantrip", 1, "You know one cantrip of your choice from the wizard spell list. Intelligence is your spellcasting ability for it.");
+			addfeature("Cantrip", 1, "You know one cantrip of your choice from the wizard spell list. Intelligence is your spellcasting ability for it.(added)");
+			wizardCantrips(1);
 			addfeature("Extra Language", 1, "You can speak, read, and write one extra language of your choice.(added)");
 			addlang();
 			break;
@@ -2678,7 +2906,8 @@ void Player::insertRace(int index) {
 			setspd(30);
 			addfeature("Superior Darkvision", 1, "Your darkvision has a radius of 120 feet.");
 			addfeature("Sunlight Sensitivity", 1, "You have disadvantage on attack rolls and on Wisdom(Perception) checks that rely on sight when you, the target of your attack, or whatever you are trying to perceive is in direct sunlight.");
-			addfeature("Drow Magic", 1, "You know the dancing lights cantrip. When you reach 3rd level, you can cast the faerie fire spell once per day. When you reach 5th level, you can also cast the darkness spell once per day. Charisma is your spellcasting ability for these spells.");
+			addfeature("Drow Magic", 1, "You know the dancing lights cantrip.(added) When you reach 3rd level, you can cast the faerie fire spell once per day. When you reach 5th level, you can also cast the darkness spell once per day. Charisma is your spellcasting ability for these spells.");
+			spellLookup("Dancing Lights", CHA);
 			addfeature("Drow Weapon Training", 1, "You have proficiency with rapiers, shortswords, and hand crossbows.(added)");
 			addfeature("Rapier", 4);
 			addfeature("Shortsword", 4);
@@ -2700,7 +2929,8 @@ void Player::insertRace(int index) {
 		if (selector == 1) {
 			setRace("Forest Gnome");
 			adddex(1);
-			addfeature("Natural Illusionist", 1, "You know the minor illusion cantrip. Intelligence is your spellcasting ability for it.");
+			addfeature("Natural Illusionist", 1, "You know the minor illusion cantrip. Intelligence is your spellcasting ability for it.(added)");
+			spellLookup("Minor Illusion", INTEL);
 			addfeature("Speak with Small Beasts", 1, "Through sounds and gestures, you can communicate simple ideas with Small or smaller beasts. Forest gnomes love animals and often keep squirrels, badgers, rabbits, moles, woodpeckers, and other creatures as beloved pets.");
 		}
 		else {
@@ -2880,7 +3110,8 @@ void Player::insertRace(int index) {
 		setspd(30);
 		addfeature("Darkvision", 1, "Thanks to your infernal heritage, you have superior vision in dark and dim conditions. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can't discern color in darkness, only shades of gray.");
 		addfeature("Hellish Resistance", 1, "You have resistance to fire damage.");
-		addfeature("Infernal Legacy", 1, "You know the thaumaturgy cantrip. Once you reach 3rd level, you can cast the hellish rebuke spell once per day as a 2nd-level spell. Once you reach 5th level, you can also cast the darkness spell once per day. Charisma is your spellcasting ability for these spells.");
+		addfeature("Infernal Legacy", 1, "You know the thaumaturgy cantrip.(added) Once you reach 3rd level, you can cast the hellish rebuke spell once per day as a 2nd-level spell. Once you reach 5th level, you can also cast the darkness spell once per day. Charisma is your spellcasting ability for these spells.");
+		spellLookup("Thaumaturgy", CHA);
 		break;
 	}
 }
@@ -2936,7 +3167,7 @@ int Player::calcMaxCarry() {
 	return getstr() * 15;
 }
 int Player::profBonus() {
-	int prof = ceil((float)getLevel()/4.0f) + 1;
+	int prof = (int)ceil((float)getLevel()/4.0f) + 1;
 	return prof;
 }
 void Player::setstats() {
