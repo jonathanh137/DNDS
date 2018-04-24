@@ -167,7 +167,8 @@ void display_all()
 }
 void intro()
 {
-	std::cout << "\n\n\n\tDungeons & Dragons 5e Character Generator";
+	std::cout << "\n\n\n\tDNDS (5e)";
 	std::cout << "\n\n\n\tMade by: Jonathan Ho" << endl;
+	std::wcout <<"\n\n\tDNDS is unofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. "<< (wchar_t)0xA9 <<"Wizards of the Coast LLC."<< endl;
 	std::cin.get();
 }

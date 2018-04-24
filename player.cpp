@@ -4,19 +4,19 @@ int Player::getLevel() const {
 	return level;
 }
 string Player::getClass() const {
-	switch (classes) {
-	case 1: return "Barbarian";
-	case 2: return "Bard";
-	case 3: return "Cleric";
-	case 4: return "Druid";
-	case 5: return "Fighter";
-	case 6: return "Monk";
-	case 7: return "Paladin";
-	case 8: return "Ranger";
-	case 9: return "Rogue";
-	case 10: return "Sorcerer";
-	case 11: return "Warlock";
-	case 12: return "Wizard";
+	switch (PCclass) {
+	case barbarian: return "Barbarian";
+	case bard: return "Bard";
+	case cleric: return "Cleric";
+	case druid: return "Druid";
+	case fighter: return "Fighter";
+	case monk: return "Monk";
+	case paladin: return "Paladin";
+	case ranger: return "Ranger";
+	case rogue: return "Rogue";
+	case sorcerer: return "Sorcerer";
+	case warlock: return "Warlock";
+	case wizard: return "Wizard";
 	default:
 		return "N/A";
 	}
@@ -146,8 +146,8 @@ void Player::classSkill() {
 	int selector;
 	bool flag;
 	unordered_set<Feature>::iterator it;
-	switch (classes) {
-	case 1: //barbarian
+	switch (PCclass) {
+	case barbarian: //barbarian
 		for (int i = 0; i < 2; i++) {
 			flag = false;
 			while (!flag) {
@@ -180,7 +180,7 @@ void Player::classSkill() {
 			}
 		}
 		break;
-	case 2: //bard
+	case bard: //bard
 		for (int i = 0; i < 3; i++) {
 			if (i == 0)
 				std::cout << "\nChoose Skill(1/3):";
@@ -193,7 +193,7 @@ void Player::classSkill() {
 			setssProf(selector + 5);
 		}
 		break;
-	case 3:	//cleric
+	case cleric:	//cleric
 		for (int i = 0; i < 2; i++) {
 			flag = false;
 			while (!flag) {
@@ -270,7 +270,7 @@ void Player::classSkill() {
 			}
 		}
 		break;
-	case 4: //druid
+	case druid: //druid
 		for (int i = 0; i < 2; i++) {
 			flag = false;
 			while (!flag) {
@@ -309,7 +309,7 @@ void Player::classSkill() {
 			}
 		}
 		break;
-	case 5: //fighter
+	case fighter: //fighter
 		for (int i = 0; i < 2; i++) {
 			flag = false;
 			while (!flag) {
@@ -348,7 +348,7 @@ void Player::classSkill() {
 			}
 		}
 		break;
-	case 6: //monk
+	case monk: //monk
 		for (int i = 0; i < 2; i++) {
 			flag = false;
 			while (!flag) {
@@ -381,7 +381,7 @@ void Player::classSkill() {
 			}
 		}
 		break;
-	case 7: //paladin
+	case paladin: //paladin
 		for (int i = 0; i < 2; i++) {
 			flag = false;
 			while (!flag) {
@@ -414,7 +414,7 @@ void Player::classSkill() {
 			}
 		}
 		break;
-	case 8: //ranger
+	case ranger: //ranger
 		for (int i = 0; i < 3; i++) {
 			flag = false;
 			while (!flag) {
@@ -455,7 +455,7 @@ void Player::classSkill() {
 			}
 		}
 		break;
-	case 9: //rogue
+	case rogue: //rogue
 		for (int i = 0; i < 4; i++) {
 			flag = false;
 			while (!flag) {
@@ -507,7 +507,7 @@ void Player::classSkill() {
 			}
 		}
 		break;
-	case 10: //sorcerer
+	case sorcerer: //sorcerer
 		for (int i = 0; i < 2; i++) {
 			flag = false;
 			while (!flag) {
@@ -540,7 +540,7 @@ void Player::classSkill() {
 			}
 		}
 		break;
-	case 11: //warlock
+	case warlock: //warlock
 		for (int i = 0; i < 2; i++) {
 			flag = false;
 			while (!flag) {
@@ -576,7 +576,7 @@ void Player::classSkill() {
 			}
 		}
 		break;
-	case 12: //wizard
+	case wizard: //wizard
 		for (int i = 0; i < 2; i++) {
 			flag = false;
 			while (!flag) {
@@ -790,22 +790,28 @@ void Player::addfeats() {
 			selector = intValid(7);
 			switch (selector) {
 			case 1:
-				bardCantrips(2);
+				SpellsbyClass(2, bard, 0);
+				SpellsbyClass(1, bard, 1);
 				break;
 			case 2:
-				clericCantrips(2);
+				SpellsbyClass(2, cleric, 0);
+				SpellsbyClass(1, cleric, 1);
 				break;
 			case 3:
-				druidCantrips(2);
+				SpellsbyClass(2, druid, 0);
+				SpellsbyClass(1, druid, 1);
 				break;
 			case 4:
-				sorcererCantrips(2);
+				SpellsbyClass(2, sorcerer, 0);
+				SpellsbyClass(1, sorcerer, 1);
 				break;
 			case 5:
-				warlockCantrips(2);
+				SpellsbyClass(2, warlock, 0);
+				SpellsbyClass(1, warlock, 1);
 				break;
 			case 6:
-				wizardCantrips(2);
+				SpellsbyClass(2, wizard, 0);
+				SpellsbyClass(1, wizard, 1);
 				break;
 			default:
 				cout << "Invalid selection "<< endl;
@@ -1488,168 +1494,200 @@ void Player::setSpec(string nSpec) {
 void Player::bardSpells() {
 	switch (getLevel()) {
 	case 1:
-		bardCantrips(2);
+		SpellsbyClass(2, bard, 0);
+		SpellsbyClass(4, bard, 1);
 		break;
 	default:
 		cout << "Invalid Level" << endl;
 		break;
 	}
 }
-void Player::bardCantrips(int itr) {
-	vector<string> cantrip = { "Blade Ward","Dancing Lights","Friends","Light","Mage Hand","Mending","Message","Minor Illusion","Prestidigitation","True Strike","Vicious Mockery" };
-	int ctr = 1;
-	bool flag;
-	while (ctr <= itr) {
-		flag = false;
-		std::cout << "\nChoose a cantrip(" << ctr << "/" << itr << "):" << endl;
-		for (unsigned int i = 0; i < cantrip.size(); i++)
-			std::cout << "  " << cantrip[i] << "(" << i + 1 << ")" << endl;
-		int selector = intValid(cantrip.size() + 1);
-		flag = spellLookup(cantrip[selector - 1], CHA);
-		if (!flag)
-			std::cout << "..choose again" << endl;
-		else
-			ctr++;
-	}
-}
-
 void Player::clericSpells() {
 	switch (getLevel()) {
 	case 1:
-		clericCantrips(3);
+		SpellsbyClass(3, cleric, 0);
+		SpellsbyClass(calcmod(getwis()) + 1, cleric, 1, true);
 		break;
 	default:
 		cout << "Invalid Level" << endl;
 		break;
 	}
 }
-void Player::clericCantrips(int itr) {
-	vector<string> cantrip = { "Guidance","Light","Mending","Resistance","Sacred Flame","Spare the Dying","Thaumaturgy" };
-	int ctr = 1;
-	bool flag;
-	while (ctr <= itr) {
-		flag = false;
-		std::cout << "\nChoose a cantrip(" << ctr << "/" << itr << "):" << endl;
-		for (unsigned int i = 0; i < cantrip.size(); i++)
-			std::cout << "  " << cantrip[i] << "(" << i + 1 << ")" << endl;
-		int selector = intValid(cantrip.size() + 1);
-		flag = spellLookup(cantrip[selector - 1], WIS);
-		if (!flag)
-			std::cout << "..choose again" << endl;
-		else
-			ctr++;
-	}
-}
-
 void Player::druidSpells() {
 	switch (getLevel()) {
 	case 1:
-		druidCantrips(2);
+		SpellsbyClass(2, druid, 0);
+		SpellsbyClass(calcmod(getwis()), druid, 1, true);
 		break;
 	default:
 		cout << "Invalid Level" << endl;
 		break;
 	}
 }
-void Player::druidCantrips(int itr) {
-	vector<string> cantrip = { "Druidcraft","Guidance","Mending","Poison Spray","Produce Flame","Resistance","Shillelagh","Thorn Whip" };
-	int ctr = 1;
-	bool flag;
-	while (ctr <= itr) {
-		flag = false;
-		std::cout << "\nChoose a cantrip(" << ctr << "/" << itr << "):" << endl;
-		for (unsigned int i = 0; i < cantrip.size(); i++)
-			std::cout << "  " << cantrip[i] << "(" << i + 1 << ")" << endl;
-		int selector = intValid(cantrip.size() + 1);
-		flag = spellLookup(cantrip[selector - 1], WIS);
-		if (!flag)
-			std::cout << "..choose again" << endl;
-		else
-			ctr++;
-	}
-}
-
 void Player::sorcererSpells() {
 	switch (getLevel()) {
 	case 1:
-		sorcererCantrips(4);
+		SpellsbyClass(4, sorcerer, 0);
+		SpellsbyClass(2, sorcerer, 1);
 		break;
 	default:
 		cout << "Invalid Level" << endl;
 		break;
 	}
 }
-void Player::sorcererCantrips(int itr) {
-	vector<string> cantrip = { "Acid Splash","Blade Ward","Chill Touch","Dancing Lights","Fire Bolt","Friends","Light","Mage Hand","Mending","Message","Minor Illusion","Poison Spray","Prestidigitation","Ray of Frost","Shocking Grasp","True Strike" };
-	int ctr = 1;
-	bool flag;
-	while (ctr <= itr) {
-		flag = false;
-		std::cout << "\nChoose a cantrip(" << ctr << "/" << itr << "):" << endl;
-		for (unsigned int i = 0; i < cantrip.size(); i++)
-			std::cout << "  " << cantrip[i] << "(" << i + 1 << ")" << endl;
-		int selector = intValid(cantrip.size() + 1);
-		flag = spellLookup(cantrip[selector - 1], CHA);
-		if (!flag)
-			std::cout << "..choose again" << endl;
-		else
-			ctr++;
-	}
-}
-
 void Player::warlockSpells() {
 	switch (getLevel()) {
 	case 1:
-		warlockCantrips(2);
+		SpellsbyClass(2, warlock, 0);
+		SpellsbyClass(2, warlock, 1);
 		break;
 	default:
 		cout << "Invalid Level" << endl;
 		break;
 	}
 }
-void Player::warlockCantrips(int itr) {
-	vector<string> cantrip = { "Blade Ward","Chill Touch","Eldritch Blast","Friends","Mage Hand","Minor Illusion","Poison Spray","Prestidigitation","True Strike" };
-	int ctr = 1;
-	bool flag;
-	while (ctr <= itr) {
-		flag = false;
-		std::cout << "\nChoose a cantrip(" << ctr << "/" << itr << "):" << endl;
-		for (unsigned int i = 0; i < cantrip.size(); i++)
-			std::cout << "  " << cantrip[i] << "(" << i + 1 << ")" << endl;
-		int selector = intValid(cantrip.size() + 1);
-		flag = spellLookup(cantrip[selector - 1], CHA);
-		if (!flag)
-			std::cout << "..choose again" << endl;
-		else
-			ctr++;
-	}
-}
-
 void Player::wizardSpells() {
 	switch (getLevel()) {
 	case 1:
-		wizardCantrips(3);
+		SpellsbyClass(3, wizard, 0);
+		SpellsbyClass(calcmod(getint()), wizard, 1, true);
 		break;
 	default:
 		cout << "Invalid Level" << endl;
 		break;
 	}
 }
-void Player::wizardCantrips(int itr) {
-	vector<string> cantrip = { "Acid Splash","Blade Ward","Chill Touch","Dancing Lights","Fire Bolt","Friends","Light","Mage Hand","Mending","Message","Minor Illusion","Poison Spray","Prestidigitation","Ray of Frost","Shocking Grasp","True Strike" };
+void Player::SpellsbyClass(int itr, classes cla, int splevel, bool prep) {
+	vector<string> spellsList;
+	spellAbility Sp;
+	switch (cla) {
+	case bard:
+		switch (splevel) {
+		case 0:
+			spellsList = { "Blade Ward","Dancing Lights","Friends","Light","Mage Hand","Mending","Message","Minor Illusion","Prestidigitation","True Strike","Vicious Mockery" };
+			break;
+		case 1:
+			spellsList = { "Animal Friendship","Bane","Charm Person","Comprehend Languages","Cure Wounds","Detect Magic","Disguise Self","Dissonant Whispers","Faerie Fire","Feather Fall","Healing Word","Heroism","Identify","Illusory Script","Longstrider","Silent Image","Sleep","Speak with Animals","Tasha's Hideous Laughter","Thunderwave","Unseen Servant" };
+			break;
+		}
+		Sp = CHA;
+		break;
+	case cleric:
+		switch (splevel) {
+		case 0:
+			spellsList = { "Guidance","Light","Mending","Resistance","Sacred Flame","Spare the Dying","Thaumaturgy" };
+			break;
+		case 1:
+			spellsList = { "Bane","Bless","Command","Create or Destroy Water","Cure Wounds","Detect Evil and Good","Detect Magic","Detect Poison and Disease","Guiding Bolt","Healing Word","Inflict Wounds","Protection from Evil and Good","Purify Food and Drink","Sanctuary","Shield of Faith" };
+			break;
+		}
+		Sp = WIS;
+		break;
+	case druid:
+		switch (splevel) {
+		case 0:
+			spellsList = { "Druidcraft","Guidance","Mending","Poison Spray","Produce Flame","Resistance","Shillelagh","Thorn Whip" };
+			break;
+		case 1:
+			spellsList = { "Animal Friendship","Charm Person","Create or Destroy Water","Cure Wounds","Detect Magic","Detect Poison and Disease","Entangle","Faerie Fire","Fog Cloud","Goodberry","Healing Word","Jump","Longstrider","Purify Food and Drink","Speak with Animals","Thunderwave" };
+			break;
+		}
+		Sp = WIS;
+		break;
+	case sorcerer:
+		switch (splevel) {
+		case 0:
+			spellsList = { "Acid Splash","Blade Ward","Chill Touch","Dancing Lights","Fire Bolt","Friends","Light","Mage Hand","Mending","Message","Minor Illusion","Poison Spray","Prestidigitation","Ray of Frost","Shocking Grasp","True Strike" };
+			break;
+		case 1:
+			spellsList = { "Burning Hands","Charm Person","Chromatic Orb","Color Spray","Comprehend Languages","Detect Magic","Disguise Self","Expeditious Retreat","False Life","Feather Fall","Fog Cloud","Jump","Mage Armor","Magic Missile","Ray of Sickness","Shield","Silent Image","Sleep","Thunderwave","Witch Bolt" };
+			break;
+		}
+		Sp = CHA;
+		break;
+	case warlock:
+		switch (splevel) {
+		case 0:
+			spellsList = { "Blade Ward","Chill Touch","Eldritch Blast","Friends","Mage Hand","Minor Illusion","Poison Spray","Prestidigitation","True Strike" };
+			break;
+		case 1:
+			spellsList = { "Armor of Agathys","Arms of Hadar","Charm Person","Comprehend Languages","Expeditious Retreat","Hellish Rebuke","Hex","Illusory Script","Protection from Evil and Good","Unseen Servant","Witch Bolt" };
+			break;
+		}
+		Sp = CHA;
+		break;
+	case wizard:
+		switch (splevel) {
+		case 0:
+			spellsList = { "Acid Splash","Blade Ward","Chill Touch","Dancing Lights","Fire Bolt","Friends","Light","Mage Hand","Mending","Message","Minor Illusion","Poison Spray","Prestidigitation","Ray of Frost","Shocking Grasp","True Strike" };
+			break;
+		case 1:
+			spellsList = { "Alarm","Burning Hands","Charm Person","Chromatic Orb","Color Spray","Comprehend Languages","Detect Magic","Disguise Self","Expeditious Retreat","False Life","Feather Fall","Find Familiar","Fog Cloud","Grease","Identify","Illusory Script","Jump","Longstrider","Mage Armor","Magic Missile","Protection from Evil and Good","Ray of Sickness","Shield","Silent Image","Sleep","Tasha's Hideous Laughter","Tenser's Floating Disk","Thunderwave","Unseen Servant","Witch Bolt" };
+			break;
+		}
+		Sp = INTEL;
+		break;
+	default:
+		break;
+	}
 	int ctr = 1;
 	bool flag;
 	while (ctr <= itr) {
 		flag = false;
-		std::cout << "\nChoose a cantrip(" << ctr << "/" << itr <<"):" << endl;
-		for (unsigned int i = 0; i < cantrip.size(); i++)
-			std::cout << "  " << cantrip[i] << "(" << i + 1 << ")" << endl;
-		int selector = intValid(cantrip.size() + 1);
-		flag = spellLookup(cantrip[selector - 1], INTEL);
+		if(splevel == 0 || cla == bard || cla == sorcerer ||cla == warlock)
+			std::cout << "\nLearn";
+		else
+			std::cout << "\nPrepare";
+		std::cout << " a ";
+		if (splevel == 0)
+			std::cout << "cantrip";
+		else {
+			if (splevel == 1)
+				std::cout << "1st";
+			else if (splevel == 2)
+				std::cout << "2nd";
+			else if (splevel == 3)
+				std::cout << "3rd";
+			else
+				std::cout << splevel << "th";
+				std::cout << "-level spell";
+		}
+				std::cout << "(" << ctr << "/" << itr << "):" << endl;
+		for (unsigned int i = 0; i < spellsList.size(); i++)
+			std::cout << "  " << spellsList[i] << "(" << i + 1 << ")" << endl;
+		int selector = intValid(spellsList.size() + 1);
+		if(prep)
+			flag = spellLookup(spellsList[selector - 1], Sp, true);
+		else
+			flag = spellLookup(spellsList[selector - 1], Sp);
 		if (!flag)
 			std::cout << "..choose again" << endl;
 		else
 			ctr++;
+	}
+}
+void Player::classSpells() {
+	switch (PCclass) {
+	case bard:
+		bardSpells();
+		break;
+	case cleric:
+		clericSpells();
+		break;
+	case druid:
+		druidSpells();
+		break;
+	case sorcerer:
+		sorcererSpells();
+		break;
+	case warlock:
+		warlockSpells();
+		break;
+	case wizard:
+		wizardSpells();
+		break;
+	default:
+		break;
 	}
 }
 
@@ -1662,8 +1700,8 @@ void Player::classRoll(int rolls[], bool money) {
 	int flag = 0;
 	vector<string> templang;
 	vector<string> Type1;
-	switch (classes) {
-	case 1: //barbarian
+	switch (PCclass) {
+	case barbarian: //barbarian
 		addstr(rolls[0]);
 		addcon(rolls[1]);
 		adddex(rolls[2]);
@@ -1721,7 +1759,7 @@ void Player::classRoll(int rolls[], bool money) {
 			}
 		}
 		break;
-	case 2: //bard
+	case bard: //bard
 		addcha(rolls[0]);
 		adddex(rolls[1]);
 		addcon(rolls[2]);
@@ -1742,7 +1780,6 @@ void Player::classRoll(int rolls[], bool money) {
 		addresource("Spell Slots(Spellcasting)", 2, 2, 1);
 		addfeature("Bardic Inspiration(d6)", 0, "You can inspire others through stirring words or music. To do so, you use a bonus action on your turn to choose one creature other than yourself within 60 feet of you who can hear you. That creature gains one Bardic Inspiration die, a d6.\nOnce within the next 10 minutes, the creature can roll the die and add the number rolled to one ability check, attack roll, or saving throw it makes. The creature can wait until after it rolls the d20 before deciding to use the Bardic Inspiration die, but must decide before the DM says whether the roll succeeds or fails. Once the Bardic Inspiration die is rolled, it is lost. A creature can have only one Bardic Inspiration die at a time.\nYou can use this feature a number of times equal to your Charisma modifier(a minimum of once). You regain any expended uses when you finish a long rest.\nYour Bardic Inspiration die changes when you reach certain levels in this class. The die becomes a d8 at 5th level, a d10 at 10th level, and a d12 at 15th level.(added)");
 		addresource("Bardic Inspiration", calcmod(getcha()), 2);
-		bardSpells();
 		if (money) {
 			addGp(dRoll(5, 4) * 10);
 		}
@@ -1777,7 +1814,7 @@ void Player::classRoll(int rolls[], bool money) {
 			addWeapon("Dagger", 1.0f);
 		}
 		break;
-	case 3: //cleric
+	case cleric: //cleric
 		addwis(rolls[0]);
 		addcon(rolls[1]);
 		addstr(rolls[2]);
@@ -1819,7 +1856,7 @@ void Player::classRoll(int rolls[], bool money) {
 		case 4:
 			addfeature("Divine Domain: Nature", 0);
 			addfeature("Acolyte of Nature", 0, "At 1st level, you learn one druid cantrip of your choice.(added)\nYou also gain proficiency in one of the following skills of your choice: Animal Handling, Nature, or Survival.(added)");
-			druidCantrips(1);
+			SpellsbyClass(1, druid, 0);
 			addfeature("Bonus Proficiency", 0, "Also at 1st level, you gain proficiency with heavy armor.(added)");
 			addfeature("Heavy armor", 5);
 			break;
@@ -1844,7 +1881,6 @@ void Player::classRoll(int rolls[], bool money) {
 			addresource("War Priest", calcmod(getwis()), 2);
 			break;
 		}
-		clericSpells();
 		if (money) {
 			addGp(dRoll(5, 4) * 10);
 		}
@@ -1913,7 +1949,7 @@ void Player::classRoll(int rolls[], bool money) {
 			}
 		}
 		break;
-	case 4: //druid
+	case druid: //druid
 		addwis(rolls[0]);
 		adddex(rolls[1]);
 		addcon(rolls[2]);
@@ -1941,7 +1977,6 @@ void Player::classRoll(int rolls[], bool money) {
 		addfeature("Druidic", 3);
 		addfeature("Spellcasting", 0, "* Cantrips\n* Preparing and Casting Spells\n* Spellcasting Ability(Wisdom)\n* Ritual Casting\n* Spellcasting Focus(Druidic focus)");
 		addresource("Spell Slots(Spellcasting)", 2, 2, 1);
-		druidSpells();
 		if (money) {
 			addGp(dRoll(2, 4) * 10);
 		}
@@ -1988,7 +2023,7 @@ void Player::classRoll(int rolls[], bool money) {
 			}
 		}
 		break;
-	case 5: //fighter
+	case fighter: //fighter
 		addstr(rolls[0]);
 		addcon(rolls[1]);
 		adddex(rolls[2]);
@@ -2080,7 +2115,7 @@ void Player::classRoll(int rolls[], bool money) {
 			}
 		}
 		break;
-	case 6: //monk
+	case monk: //monk
 		adddex(rolls[0]);
 		addwis(rolls[1]);
 		addcon(rolls[2]);
@@ -2133,7 +2168,7 @@ void Player::classRoll(int rolls[], bool money) {
 			addWeapon("Dart", 0.25f, 10);
 		}
 		break;
-	case 7: //paladin
+	case paladin: //paladin
 		addcha(rolls[0]);
 		addstr(rolls[1]);
 		addcon(rolls[2]);
@@ -2205,7 +2240,7 @@ void Player::classRoll(int rolls[], bool money) {
 			}
 		}
 		break;
-	case 8: //ranger
+	case ranger: //ranger
 		adddex(rolls[0]);
 		addcon(rolls[1]);
 		addwis(rolls[2]);
@@ -2445,7 +2480,7 @@ void Player::classRoll(int rolls[], bool money) {
 			addGear("Arrow", 0.05f, 20);
 		}
 		break;
-	case 9: //rogue
+	case rogue: //rogue
 		adddex(rolls[0]);
 		addwis(rolls[1]);
 		addcon(rolls[2]);
@@ -2512,7 +2547,7 @@ void Player::classRoll(int rolls[], bool money) {
 			addTool("Thieves' tools", 1.0f);
 		}
 		break;
-	case 10: //sorcerer
+	case sorcerer: //sorcerer
 		addcha(rolls[0]);
 		adddex(rolls[1]);
 		addcon(rolls[2]);
@@ -2554,7 +2589,6 @@ void Player::classRoll(int rolls[], bool money) {
 			addresource("Tides of Chaos", 1, 2);
 			break;
 		}
-		sorcererSpells();
 		if (money) {
 			addGp(dRoll(3, 4) * 10);
 		}
@@ -2614,7 +2648,7 @@ void Player::classRoll(int rolls[], bool money) {
 			addWeapon("Dagger", 1.0f, 2);
 		}
 		break;
-	case 11: //warlock
+	case warlock: //warlock
 		addcha(rolls[0]);
 		addcon(rolls[1]);
 		adddex(rolls[2]);
@@ -2645,7 +2679,6 @@ void Player::classRoll(int rolls[], bool money) {
 		}
 		addfeature("Pact Magic", 0, "* Cantrips\n* Spell Slots\n* Spells Known of 1st Level and Higher\n* Spellcasting Ability(Charisma)\n* Spellcasting Focus(Arcane focus)");
 		addresource("Spell Slots(Pact Magic)", 1, 0, 1);
-		warlockSpells();
 		if (money) {
 			addGp(dRoll(4, 4) * 10);
 		}
@@ -2707,7 +2740,7 @@ void Player::classRoll(int rolls[], bool money) {
 			addWeapon("Dagger", 1.0f, 2);
 		}
 		break;
-	case 12: //wizard
+	case wizard: //wizard
 		addint(rolls[0]);
 		adddex(rolls[1]);
 		addcon(rolls[2]);
@@ -2725,7 +2758,6 @@ void Player::classRoll(int rolls[], bool money) {
 		addfeature("Spellcasting", 0, "* Cantrips\n* Spellbook\n* Preparing and Casting Spells\n* Spellcasting Ability(Intelligence)\n* Ritual Casting\n* Spellcasting Focus(Arcane focus)");
 		addresource("Spell Slots(Spellcasting)", 2, 2, 1);
 		addfeature("Arcane Recovery", 0, "You have learned to regain some of your magical energy by studying your spellbook. Once per day when you finish a short rest, you can choose expended spell slots to recover. The spell slots can have a combined level that is equal to or less than half your wizard level(rounded up), and none of the slots can be 6th level or higher.\nFor example, if you’re a 4th-level wizard, you can recover up to two levels worth of spell slots. You can recover either a 2nd-level spell slot or two 1st-level spell slots.");
-		wizardSpells();
 		if (money) {
 			addGp(dRoll(4, 4) * 10);
 		}
@@ -2884,7 +2916,7 @@ void Player::insertRace(int index) {
 			addfeature("Shortbow", 4);
 			addfeature("Longbow", 4);
 			addfeature("Cantrip", 1, "You know one cantrip of your choice from the wizard spell list. Intelligence is your spellcasting ability for it.(added)");
-			wizardCantrips(1);
+			SpellsbyClass(1, wizard, 0);
 			addfeature("Extra Language", 1, "You can speak, read, and write one extra language of your choice.(added)");
 			addlang();
 			break;
@@ -3118,25 +3150,25 @@ void Player::insertRace(int index) {
 void Player::calcmaxHP() {
 	int temp;
 	int mod = calcmod(getcon());
-	switch (classes) {
-	case 1: //d12 
+	switch (PCclass) {
+	case barbarian: //d12 
 		addmaxhp(temp = 12 + mod);
 		break;
-	case 5: //d10
-	case 7:
-	case 8:
+	case fighter: //d10
+	case paladin:
+	case ranger:
 		addmaxhp(temp = 10 + mod);
 		break;
-	case 2: //d8
-	case 3:
-	case 4:
-	case 6:
-	case 9:
-	case 11:
+	case bard: //d8
+	case cleric:
+	case druid:
+	case monk:
+	case rogue:
+	case warlock:
 		addmaxhp(temp = 8 + mod);
 		break;
-	case 10: //d6
-	case 12:
+	case sorcerer: //d6
+	case wizard:
 		addmaxhp(temp = 6 + mod);
 		break;
 	}
@@ -3193,7 +3225,7 @@ void Player::setstats() {
 
 	std::cout << "\nChoose a class:\n  Barbarian(1)\n  Bard(2)\n  Cleric(3)\n  Druid(4)\n  Fighter(5)\n  Monk(6)\n  Paladin(7)\n  Ranger(8)\n  Rogue(9)\n  Sorcerer(10)\n  Warlock(11)\n  Wizard(12)" << endl;
 	selector = intValid(13);
-	classes = selector;
+	PCclass = (classes)(selector - 1);
 	for (i = 0; i < 6; i++) {
 		tempstats[i] = statrolls();
 	}
@@ -3216,6 +3248,7 @@ void Player::setstats() {
 	selector = 0;
 	classSkill();
 	featAdder();
+	classSpells();
 
 	std::cout << "\nEnter age: ";
 	std::cin.ignore(INT_MAX, '\n');
@@ -3520,7 +3553,13 @@ void Player::displaystats() {
 	if (!spellList.empty()) {
 		std::cout << "\n  SPELLS" << endl;
 		std::cout << "  ======";
+		bool prepare = false;
+		std::cout << "\n  Known Spells: "<< endl;
 		for (auto it = spellList.begin(); it != spellList.end(); ++it) {
+			if (!prepare && (*it)->getPrepare()) {
+				std::cout << "\n  Prepared Spells:" << endl;
+				prepare = true;
+			}
 			std::cout << "\n  " << (*it)->getName() << endl;
 			if ((*it)->getLvl() == 0)
 				std::cout << "    " << (*it)->getType() << " Cantrip";

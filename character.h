@@ -134,7 +134,7 @@ public:
 	unordered_set<Armor>::iterator findArmor(string);
 	unordered_set<Gear>::iterator findGear(string);
 	unordered_set<Tool>::iterator findTool(string);
-	bool spellLookup(string, spellAbility);
+	bool spellLookup(string, spellAbility , bool = false);
 
 	int calcmod(int);
 	void listInv();

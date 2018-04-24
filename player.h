@@ -2,10 +2,12 @@
 #include "character.h"
 #include <iostream>
 
+enum classes {barbarian, bard, cleric, druid, fighter, monk, paladin, ranger, rogue, sorcerer, warlock, wizard};
+
 class Player : public character {
 protected:
 	int level;
-	int classes;
+	classes PCclass;
 	int bg;
 	float carry = 0;
 	string age;
@@ -19,7 +21,7 @@ protected:
 	template <class Archive>
 	void serialize(Archive & ar)
 	{
-		ar(cereal::base_class<character>(this), level, classes, bg, carry, age, height, weight, eyes, skin, hair, special);
+		ar(cereal::base_class<character>(this), level, PCclass, bg, carry, age, height, weight, eyes, skin, hair, special);
 	}
 public:
 	int getLevel()const;
@@ -55,17 +57,13 @@ public:
 	void setSpec(string);
 
 	void bardSpells();
-	void bardCantrips(int);
 	void clericSpells();
-	void clericCantrips(int);
 	void druidSpells();
-	void druidCantrips(int);
 	void sorcererSpells();
-	void sorcererCantrips(int);
 	void warlockSpells();
-	void warlockCantrips(int);
 	void wizardSpells();
-	void wizardCantrips(int);
+	void SpellsbyClass(int, classes, int, bool = false);
+	void classSpells();
 
 	void addCarry(float);
 	void classRoll(int[], bool);

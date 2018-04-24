@@ -1119,97 +1119,284 @@ unordered_set<Tool>::iterator character::findTool(string tool) {
 	unordered_set<Tool>::iterator result = find_if(toolInv.begin(), toolInv.end(), find_by_name<Tool>(tool));
 	return result;
 }
-bool character::spellLookup(string name, spellAbility sA) {
+bool character::spellLookup(string name, spellAbility sA , bool prep) {
 	string temp = name;
+	temp.erase(std::remove(temp.begin(), temp.end(), '\''), temp.end());
 	temp.erase(std::remove_if(temp.begin(), temp.end(), std::isspace), temp.end());
 	temp = totitle(temp);
 	pair<set<shared_ptr<Spell>>::iterator, bool> flag;
 	switch (name_to_Spells(temp)) {
-	case acidsplash:
-		flag = spellList.emplace(new AcidSplash(sA));
-		break;
-	case bladeward:
-		flag = spellList.emplace(new BladeWard());
-		break;
-	case chilltouch:
-		flag = spellList.emplace(new ChillTouch(sA));
-		break;
-	case dancinglights:
-		flag = spellList.emplace(new DancingLights());
-		break;
-	case druidcraft:
-		flag = spellList.emplace(new Druidcraft());
-		break;
-	case eldritchblast:
-		flag = spellList.emplace(new EldritchBlast(sA));
-		break;
-	case firebolt:
-		flag = spellList.emplace(new FireBolt(sA));
-		break;
-	case friends:
-		flag = spellList.emplace(new Friends());
-		break;
-	case guidance:
-		flag = spellList.emplace(new Guidance());
-		break;
-	case light:
-		flag = spellList.emplace(new Light(sA));
-		break;
-	case magehand:
-		flag = spellList.emplace(new MageHand());
-		break;
-	case mending:
-		flag = spellList.emplace(new Mending());
-		break;
-	case message:
-		flag = spellList.emplace(new Message());
-		break;
-	case minorillusion:
-		flag = spellList.emplace(new MinorIllusion(sA));
-		break;
-	case poisonspray:
-		flag = spellList.emplace(new PoisonSpray(sA));
-		break;
-	case prestidigitation:
-		flag = spellList.emplace(new Prestidigitation());
-		break;
-	case produceflame:
-		flag = spellList.emplace(new ProduceFlame(sA));
-		break;
-	case rayoffrost:
-		flag = spellList.emplace(new RayofFrost(sA));
-		break;
-	case resistance:
-		flag = spellList.emplace(new Resistance());
-		break;
-	case sacredflame:
-		flag = spellList.emplace(new SacredFlame(sA));
-		break;
-	case shillelagh:
-		flag = spellList.emplace(new Shillelagh(sA));
-		break;
-	case shockinggrasp:
-		flag = spellList.emplace(new ShockingGrasp(sA));
-		break;
-	case sparethedying:
-		flag = spellList.emplace(new SparetheDying());
-		break;
-	case thaumaturgy:
-		flag = spellList.emplace(new Thaumaturgy());
-		break;
-	case thornwhip:
-		flag = spellList.emplace(new ThornWhip(sA));
-		break;
-	case truestrike:
-		flag = spellList.emplace(new TrueStrike());
-		break;
-	case viciousmockery:
-		flag = spellList.emplace(new ViciousMockery(sA));
-		break;
-	default:
-		cout << "Spell not found";
-		return false;
-		break;
+		case acidsplash:
+			flag = spellList.emplace(new AcidSplash(sA, prep));
+			break;
+		case bladeward:
+			flag = spellList.emplace(new BladeWard(sA, prep));
+			break;
+		case chilltouch:
+			flag = spellList.emplace(new ChillTouch(sA, prep));
+			break;
+		case dancinglights:
+			flag = spellList.emplace(new DancingLights(sA, prep));
+			break;
+		case druidcraft:
+			flag = spellList.emplace(new Druidcraft(sA, prep));
+			break;
+		case eldritchblast:
+			flag = spellList.emplace(new EldritchBlast(sA, prep));
+			break;
+		case firebolt:
+			flag = spellList.emplace(new FireBolt(sA, prep));
+			break;
+		case friends:
+			flag = spellList.emplace(new Friends(sA, prep));
+			break;
+		case guidance:
+			flag = spellList.emplace(new Guidance(sA, prep));
+			break;
+		case light:
+			flag = spellList.emplace(new Light(sA, prep));
+			break;
+		case magehand:
+			flag = spellList.emplace(new MageHand(sA, prep));
+			break;
+		case mending:
+			flag = spellList.emplace(new Mending(sA, prep));
+			break;
+		case message:
+			flag = spellList.emplace(new Message(sA, prep));
+			break;
+		case minorillusion:
+			flag = spellList.emplace(new MinorIllusion(sA, prep));
+			break;
+		case poisonspray:
+			flag = spellList.emplace(new PoisonSpray(sA, prep));
+			break;
+		case prestidigitation:
+			flag = spellList.emplace(new Prestidigitation(sA, prep));
+			break;
+		case produceflame:
+			flag = spellList.emplace(new ProduceFlame(sA, prep));
+			break;
+		case rayoffrost:
+			flag = spellList.emplace(new RayofFrost(sA, prep));
+			break;
+		case resistance:
+			flag = spellList.emplace(new Resistance(sA, prep));
+			break;
+		case sacredflame:
+			flag = spellList.emplace(new SacredFlame(sA, prep));
+			break;
+		case shillelagh:
+			flag = spellList.emplace(new Shillelagh(sA, prep));
+			break;
+		case shockinggrasp:
+			flag = spellList.emplace(new ShockingGrasp(sA, prep));
+			break;
+		case sparethedying:
+			flag = spellList.emplace(new SparetheDying(sA, prep));
+			break;
+		case thaumaturgy:
+			flag = spellList.emplace(new Thaumaturgy(sA, prep));
+			break;
+		case thornwhip:
+			flag = spellList.emplace(new ThornWhip(sA, prep));
+			break;
+		case truestrike:
+			flag = spellList.emplace(new TrueStrike(sA, prep));
+			break;
+		case viciousmockery:
+			flag = spellList.emplace(new ViciousMockery(sA, prep));
+			break;
+		case alarm:
+			flag = spellList.emplace(new Alarm(sA, prep));
+			break;
+		case animalfriendship:
+			flag = spellList.emplace(new AnimalFriendship(sA, prep));
+			break;
+		case armorofagathys:
+			flag = spellList.emplace(new ArmorofAgathys(sA, prep));
+			break;
+		case armsofhadar:
+			flag = spellList.emplace(new ArmsofHadar(sA, prep));
+			break;
+		case bane:
+			flag = spellList.emplace(new Bane(sA, prep));
+			break;
+		case bless:
+			flag = spellList.emplace(new Bless(sA, prep));
+			break;
+		case burninghands:
+			flag = spellList.emplace(new BurningHands(sA, prep));
+			break;
+		case charmperson:
+			flag = spellList.emplace(new CharmPerson(sA, prep));
+			break;
+		case chromaticorb:
+			flag = spellList.emplace(new ChromaticOrb(sA, prep));
+			break;
+		case colorspray:
+			flag = spellList.emplace(new ColorSpray(sA, prep));
+			break;
+		case command:
+			flag = spellList.emplace(new Command(sA, prep));
+			break;
+		case compelledduel:
+			flag = spellList.emplace(new CompelledDuel(sA, prep));
+			break;
+		case comprehendlanguages:
+			flag = spellList.emplace(new ComprehendLanguages(sA, prep));
+			break;
+		case createordestroywater:
+			flag = spellList.emplace(new CreateorDestroyWater(sA, prep));
+			break;
+		case curewounds:
+			flag = spellList.emplace(new CureWounds(sA, prep));
+			break;
+		case detectevilandgood:
+			flag = spellList.emplace(new DetectEvilandGood(sA, prep));
+			break;
+		case detectmagic:
+			flag = spellList.emplace(new DetectMagic(sA, prep));
+			break;
+		case detectpoisonanddisease:
+			flag = spellList.emplace(new DetectPoisonandDisease(sA, prep));
+			break;
+		case disguiseself:
+			flag = spellList.emplace(new DisguiseSelf(sA, prep));
+			break;
+		case dissonantwhispers:
+			flag = spellList.emplace(new DissonantWhispers(sA, prep));
+			break;
+		case divinefavor:
+			flag = spellList.emplace(new DivineFavor(sA, prep));
+			break;
+		case ensnaringstrike:
+			flag = spellList.emplace(new EnsnaringStrike(sA, prep));
+			break;
+		case entangle:
+			flag = spellList.emplace(new Entangle(sA, prep));
+			break;
+		case expeditiousretreat:
+			flag = spellList.emplace(new ExpeditiousRetreat(sA, prep));
+			break;
+		case faeriefire:
+			flag = spellList.emplace(new FaerieFire(sA, prep));
+			break;
+		case falselife:
+			flag = spellList.emplace(new FalseLife(sA, prep));
+			break;
+		case featherfall:
+			flag = spellList.emplace(new FeatherFall(sA, prep));
+			break;
+		case findfamiliar:
+			flag = spellList.emplace(new FindFamiliar(sA, prep));
+			break;
+		case fogcloud:
+			flag = spellList.emplace(new FogCloud(sA, prep));
+			break;
+		case goodberry:
+			flag = spellList.emplace(new Goodberry(sA, prep));
+			break;
+		case grease:
+			flag = spellList.emplace(new Grease(sA, prep));
+			break;
+		case guidingbolt:
+			flag = spellList.emplace(new GuidingBolt(sA, prep));
+			break;
+		case hailofthorns:
+			flag = spellList.emplace(new HailofThorns(sA, prep));
+			break;
+		case healingword:
+			flag = spellList.emplace(new HealingWord(sA, prep));
+			break;
+		case hellishrebuke:
+			flag = spellList.emplace(new HellishRebuke(sA, prep));
+			break;
+		case heroism:
+			flag = spellList.emplace(new Heroism(sA, prep));
+			break;
+		case Spells::hex:
+			flag = spellList.emplace(new Hex(sA, prep));
+			break;
+		case huntersmark:
+			flag = spellList.emplace(new HuntersMark(sA, prep));
+			break;
+		case identify:
+			flag = spellList.emplace(new Identify(sA, prep));
+			break;
+		case illusoryscript:
+			flag = spellList.emplace(new IllusoryScript(sA, prep));
+			break;
+		case inflictwounds:
+			flag = spellList.emplace(new InflictWounds(sA, prep));
+			break;
+		case jump:
+			flag = spellList.emplace(new Jump(sA, prep));
+			break;
+		case longstrider:
+			flag = spellList.emplace(new Longstrider(sA, prep));
+			break;
+		case magearmor:
+			flag = spellList.emplace(new MageArmor(sA, prep));
+			break;
+		case magicmissile:
+			flag = spellList.emplace(new MagicMissile(sA, prep));
+			break;
+		case protectionfromevilandgood:
+			flag = spellList.emplace(new ProtectionfromEvilandGood(sA, prep));
+			break;
+		case purifyfoodanddrink:
+			flag = spellList.emplace(new PurifyFoodandDrink(sA, prep));
+			break;
+		case rayofsickness:
+			flag = spellList.emplace(new RayofSickness(sA, prep));
+			break;
+		case sanctuary:
+			flag = spellList.emplace(new Sanctuary(sA, prep));
+			break;
+		case searingsmite:
+			flag = spellList.emplace(new SearingSmite(sA, prep));
+			break;
+		case shield:
+			flag = spellList.emplace(new Shield(sA, prep));
+			break;
+		case shieldoffaith:
+			flag = spellList.emplace(new ShieldofFaith(sA, prep));
+			break;
+		case silentimage:
+			flag = spellList.emplace(new SilentImage(sA, prep));
+			break;
+		case Spells::sleep:
+			flag = spellList.emplace(new SleepSpell(sA, prep));
+			break;
+		case speakwithanimals:
+			flag = spellList.emplace(new SpeakwithAnimals(sA, prep));
+			break;
+		case tashashideouslaughter:
+			flag = spellList.emplace(new TashasHideousLaughter(sA, prep));
+			break;
+		case tensersfloatingdisk:
+			flag = spellList.emplace(new TensersFloatingDisk(sA, prep));
+			break;
+		case thunderoussmite:
+			flag = spellList.emplace(new ThunderousSmite(sA, prep));
+			break;
+		case thunderwave:
+			flag = spellList.emplace(new Thunderwave(sA, prep));
+			break;
+		case unseenservant:
+			flag = spellList.emplace(new UnseenServant(sA, prep));
+			break;
+		case witchbolt:
+			flag = spellList.emplace(new WitchBolt(sA, prep));
+			break;
+		case wrathfulsmite:
+			flag = spellList.emplace(new WrathfulSmite(sA, prep));
+			break;
+		default:
+			cout << "Spell not found";
+			return false;
+			break;
 	}
 	if (!flag.second) {
 		cout << "Spell already known";
