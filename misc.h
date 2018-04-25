@@ -7,4 +7,4 @@ using namespace std;
 int dRoll(int, int);
 int statrolls();
 int compare(const void *, const void *);
-int intValid(int);
+int intValid(int, int = 1);

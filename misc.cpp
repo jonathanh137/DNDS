@@ -36,9 +36,9 @@ int compare(const void * a, const void * b)
 {
 	return (*(int*)b - *(int*)a);
 }
-int intValid(int upBound) {
+int intValid(int upBound, int downBound) {
 	int selector;
-	while ((std::cout << "-> " && !(cin >> selector)) || (selector < 1) || (selector >= upBound) || cin.peek() != '\n')
+	while ((std::cout << "-> " && !(cin >> selector)) || (selector < downBound) || (selector >= upBound) || cin.peek() != '\n')
 	{
 		std::cout << "Please enter a corresponding number" << endl;
 		cin.clear();
