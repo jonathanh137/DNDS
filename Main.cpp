@@ -56,7 +56,6 @@ int main(void) {
 			break;
 		default:std::cout << "\a";
 		}
-		//std::cin.ignore();
 		std::cin.get();
 	} while (select != 5);
 	return 0;
@@ -66,13 +65,13 @@ void createchar() {
 	Player player;
 	player.setstats();
 	vector<Player> plist;
-	ifstream is("players.bin");
+	ifstream is("players.bin", std::ios::binary);
 	if (is) {
 		cereal::BinaryInputArchive iarchive(is);
 		iarchive(plist);
 	}
 	plist.push_back(player);
-	ofstream os("players.bin");
+	ofstream os("players.bin", std::ios::binary);
 	cereal::BinaryOutputArchive oarchive(os);
 	oarchive(plist);
 	std::cout << "\nPress Enter to return to main menu..";
@@ -80,7 +79,7 @@ void createchar() {
 void statscreen(string cname) {
 	Player player;
 	vector<Player>plist;
-	ifstream is("players.bin");
+	ifstream is("players.bin", std::ios::binary);
 	if (!is) {
 		std::cout << "\nCharacter list is empty" << endl;
 		std::cout << "\nPress Enter to return to main menu..";
@@ -107,14 +106,14 @@ void deletechar(string cname) {
 	vector<Player> plist;
 	bool flag = false;
 	{
-		ifstream is("players.bin");
+		ifstream is("players.bin", std::ios::binary);
 		if (!is) {
 			std::cout << "\nCharacter list is empty" << endl;
 			std::cout << "\nPress Enter to return to main menu..";
 			return;
 		}
 		cereal::BinaryInputArchive iarchive(is);
-		ofstream os("temp.bin");
+		ofstream os("temp.bin", std::ios::binary);
 		cereal::BinaryOutputArchive oarchive(os);
 		iarchive(plist);
 		auto it = find_if(plist.begin(), plist.end(), [&cname](const Player& player) {return player.getName() == cname;});
@@ -137,7 +136,7 @@ void display_all()
 	Player player;
 	vector<Player> plist;
 	bool flag = false;
-	ifstream is("players.bin");
+	ifstream is("players.bin", std::ios::binary);
 	if (!is) {
 		std::cout << "\nCharacter list is empty" << endl;
 		std::cout << "\nPress Enter to return to main menu..";
