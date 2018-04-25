@@ -785,7 +785,7 @@ void Player::addfeats() {
 			temp = addfeature("Mage Slayer", 7, "* When a creature within 5 feet of you casts a spell, you can use your reaction to make a melee weapon attack against that creature.\n* When you damage a creature that is concentrating on a spell, that creature has disadvantage on the saving throw it makes to maintain its concentration.\n* You have advantage on saving throws against spells cast by creatures within 5 feet of you.");
 			break;
 		case 22:
-			temp = addfeature("Magic Initiate", 7, "Choose a class: bard, cleric, druid, sorcerer, warlock, or wizard. You learn two cantrips of your choice from that class's spell list.(added)\nIn addition, choose one 1st-level spell from that same list. You learn that spell and can cast it at its lowest level. Once you cast it, you must finish a long rest before you can cast it again.\nYour spellcasting ability for these spells depends on the class you chose : Charisma for bard, sorcerer, or warlock; Wisdom for cleric or druid: or Intelligence for wizard.");
+			temp = addfeature("Magic Initiate", 7, "Choose a class: bard, cleric, druid, sorcerer, warlock, or wizard. You learn two cantrips of your choice from that class's spell list.(added)\nIn addition, choose one 1st-level spell from that same list. You learn that spell and can cast it at its lowest level.(added) Once you cast it, you must finish a long rest before you can cast it again.\nYour spellcasting ability for these spells depends on the class you chose : Charisma for bard, sorcerer, or warlock; Wisdom for cleric or druid: or Intelligence for wizard.");
 			cout << "\nChoose class spell list:\n  Bard(1)\n  Cleric(2)\n  Druid(3)\n  Sorcerer(4)\n  Warlock(5)\n  Wizard(6)" << endl;
 			selector = intValid(7);
 			switch (selector) {
@@ -1426,7 +1426,7 @@ void Player::setBG(int BG, bool money) {
 				addGear("Enemy trophy: Dagger");
 				break;
 			case 2:
-				addGear("Enemy trophy: Broken blade \b"); // the \b is for strings that were size 26 which doesn't seems to want to work with reading back from file
+				addGear("Enemy trophy: Broken blade");
 				break;
 			case 3:
 				addGear("Enemey trophy: Banner piece");
@@ -1517,7 +1517,7 @@ void Player::druidSpells() {
 	switch (getLevel()) {
 	case 1:
 		SpellsbyClass(2, druid, 0);
-		SpellsbyClass(calcmod(getwis()), druid, 1, true);
+		SpellsbyClass(calcmod(getwis()) + 1, druid, 1, true);
 		break;
 	default:
 		cout << "Invalid Level" << endl;
@@ -1550,7 +1550,7 @@ void Player::wizardSpells() {
 	switch (getLevel()) {
 	case 1:
 		SpellsbyClass(3, wizard, 0);
-		SpellsbyClass(calcmod(getint()), wizard, 1, true);
+		SpellsbyClass(calcmod(getint()) + 1, wizard, 1, true);
 		break;
 	default:
 		cout << "Invalid Level" << endl;
@@ -1560,6 +1560,8 @@ void Player::wizardSpells() {
 void Player::SpellsbyClass(int itr, classes cla, int splevel, bool prep) {
 	vector<string> spellsList;
 	spellAbility Sp;
+	if (itr <= 0)
+		itr = 1;
 	switch (cla) {
 	case bard:
 		switch (splevel) {
@@ -1695,19 +1697,12 @@ void Player::addCarry(float w) {
 	carry += w;
 }
 void Player::classRoll(int rolls[], bool money) {
-	qsort(rolls, 6, sizeof(int), compare);
 	int selector = 0;
 	int flag = 0;
 	vector<string> templang;
 	vector<string> Type1;
 	switch (PCclass) {
 	case barbarian: //barbarian
-		addstr(rolls[0]);
-		addcon(rolls[1]);
-		adddex(rolls[2]);
-		addcha(rolls[3]);
-		addwis(rolls[4]);
-		addint(rolls[5]);
 		addfeature("Light armor", 5);
 		addfeature("Medium armor", 5);
 		addfeature("Shield", 5);
@@ -1718,8 +1713,6 @@ void Player::classRoll(int rolls[], bool money) {
 		addfeature("Rage", 0, "In battle, you fight with primal ferocity. On your turn, you can enter a rage as a bonus action.\nWhile raging, you gain the following benefits if you aren't wearing heavy armor:\n* You have advantage on Strength checks and Strength saving throws.\n* When you make a melee weapon attack using Strength, you gain a bonus to the damage roll that increases as you gain levels as a barbarian, as shown in the Rage Damage column of the Barbarian table.\n* You have resistance to bludgeoning, piercing, and slashing damage.\nIf you are able to cast spells, you can't cast them or concentrate on them while raging.\nYour rage lasts for 1 minute. It ends early if you are knocked unconscious or if your turn ends and you haven't attacked a hostile creature since your last turn or taken damage since then. You can also end your rage on your turn as a bonus action.\nOnce you have raged the number of times shown for your barbarian level in the Rages column of the Barbarian table, you must finish a long rest before you can rage again.");
 		addresource("Rage", 2, 2);
 		addfeature("Unarmored Defense", 0, "While you are not wearing any armor, your Armor Class equals 10 + your Dexterity modifier + your Constitution modifier. You can use a shield and still gain this benefit.(added)");
-		setac(10 + calcmod(getdex()) + calcmod(getcon()));
-
 		if (money) {
 			addGp(dRoll(2, 4) * 10);
 		}
@@ -1760,13 +1753,6 @@ void Player::classRoll(int rolls[], bool money) {
 		}
 		break;
 	case bard: //bard
-		addcha(rolls[0]);
-		adddex(rolls[1]);
-		addcon(rolls[2]);
-		addwis(rolls[3]);
-		addstr(rolls[4]);
-		addint(rolls[5]);
-		setac(10 + calcmod(getdex()));
 		addInstrumProf(3);
 		addfeature("Light armor", 5);
 		addfeature("Simple weapons", 4);
@@ -1779,7 +1765,6 @@ void Player::classRoll(int rolls[], bool money) {
 		addfeature("Spellcasting", 0, "* Cantrips\n* Spell Slots\n* Spells Known of 1st Level and Higher\n* Spellcasting Ability(Charisma)\n* Ritual Casting\n* Spellcasting Focus(Musical instrument)");
 		addresource("Spell Slots(Spellcasting)", 2, 2, 1);
 		addfeature("Bardic Inspiration(d6)", 0, "You can inspire others through stirring words or music. To do so, you use a bonus action on your turn to choose one creature other than yourself within 60 feet of you who can hear you. That creature gains one Bardic Inspiration die, a d6.\nOnce within the next 10 minutes, the creature can roll the die and add the number rolled to one ability check, attack roll, or saving throw it makes. The creature can wait until after it rolls the d20 before deciding to use the Bardic Inspiration die, but must decide before the DM says whether the roll succeeds or fails. Once the Bardic Inspiration die is rolled, it is lost. A creature can have only one Bardic Inspiration die at a time.\nYou can use this feature a number of times equal to your Charisma modifier(a minimum of once). You regain any expended uses when you finish a long rest.\nYour Bardic Inspiration die changes when you reach certain levels in this class. The die becomes a d8 at 5th level, a d10 at 10th level, and a d12 at 15th level.(added)");
-		addresource("Bardic Inspiration", calcmod(getcha()), 2);
 		if (money) {
 			addGp(dRoll(5, 4) * 10);
 		}
@@ -1815,13 +1800,6 @@ void Player::classRoll(int rolls[], bool money) {
 		}
 		break;
 	case cleric: //cleric
-		addwis(rolls[0]);
-		addcon(rolls[1]);
-		addstr(rolls[2]);
-		adddex(rolls[3]);
-		addcha(rolls[4]);
-		addint(rolls[5]);
-		setac(10 + calcmod(getdex()));
 		addfeature("Light armor", 5);
 		addfeature("Medium armor", 5);
 		addfeature("Shield", 5);
@@ -1851,7 +1829,6 @@ void Player::classRoll(int rolls[], bool money) {
 			addfeature("Bonus Cantrip", 0, "When you choose this domain at 1st level, you gain the light cantrip if you don't already know it.(added)");
 			spellLookup("Light", WIS);
 			addfeature("Warding Flare", 0, "Also at 1st level, you can interpose divine light between yourself and an attacking enemy. When you are attacked by a creature within 30 feet of you that you can see, you can use your reaction to impose disadvantage on the attack roll, causing light to flare before the attacker before it hits or misses. An attacker that can't be blinded is immune to this feature.\nYou can use this feature a number of times equal to your Wisdom modifier(a minimum of once). You regain all expended uses when you finish a long rest.(added)");
-			addresource("Warding Flare", calcmod(getwis()), 2);
 			break;
 		case 4:
 			addfeature("Divine Domain: Nature", 0);
@@ -1866,7 +1843,6 @@ void Player::classRoll(int rolls[], bool money) {
 			addfeature("Martial weapons", 4);
 			addfeature("Heavy armor", 5);
 			addfeature("Wrath of the Storm", 0, "Also at 1st level, you can thunderously rebuke attackers. When a creature within 5 feet of you that you can see hits you with an attack, you can use your reaction to cause the creature to make a Dexterity saving throw. The creature takes 2d8 lightning or thunder damage(your choice) on a failed saving throw, and half as much damage on a successful one.\nYou can use this feature a number of times equal to your Wisdom modifier(a minimum of once). You regain all expended uses when you finish a long rest.(added)");
-			addresource("Wrath of the Storm", calcmod(getwis()), 2);
 			break;
 		case 6:
 			addfeature("Divine Domain: Trickery", 0);
@@ -1878,7 +1854,6 @@ void Player::classRoll(int rolls[], bool money) {
 			addfeature("Martial weapons", 4);
 			addfeature("Heavy armor", 5);
 			addfeature("War Priest", 0, "From 1st level, your god delivers bolts of inspiration to you while you are engaged in battle. When you use the Attack action, you can make one weapon attack as a bonus action.\nYou can use this feature a number of times equal to your Wisdom modifier(a minimum of once). You regain all expended uses when you finish a long rest.(added)");
-			addresource("War Priest", calcmod(getwis()), 2);
 			break;
 		}
 		if (money) {
@@ -1950,13 +1925,6 @@ void Player::classRoll(int rolls[], bool money) {
 		}
 		break;
 	case druid: //druid
-		addwis(rolls[0]);
-		adddex(rolls[1]);
-		addcon(rolls[2]);
-		addcha(rolls[3]);
-		addint(rolls[4]);
-		addstr(rolls[5]);
-		setac(10 + calcmod(getdex()));
 		addfeature("Herbalism kit", 6);
 		addfeature("Light armor", 5);
 		addfeature("Medium armor", 5);
@@ -2024,13 +1992,6 @@ void Player::classRoll(int rolls[], bool money) {
 		}
 		break;
 	case fighter: //fighter
-		addstr(rolls[0]);
-		addcon(rolls[1]);
-		adddex(rolls[2]);
-		addwis(rolls[3]);
-		addcha(rolls[4]);
-		addint(rolls[5]);
-		setac(10 + calcmod(getdex()));
 		addfeature("All armor", 5);
 		addfeature("Shield", 5);
 		addfeature("Simple weapons", 4);
@@ -2053,7 +2014,7 @@ void Player::classRoll(int rolls[], bool money) {
 			addfeature("Fighting Style: Great Weapon Fighting", 0, "When you roll a 1 or 2 on a damage die for an attack you make with a melee weapon that you are wielding with two hands, you can reroll the die and must use the new roll, even if the new roll is a 1 or a 2. The weapon must have the two-handed or versatile property for you to gain this benefit.");
 			break;
 		case 5:
-			addfeature("Fighting Style: Protection \b", 0, "When a creature you can see attacks a target other than you that is within 5 feet of you, you can use your reaction to impose disadvantage on the attack roll. You must be wielding a shield."); // the \b is for strings that were size 26 which doesn't seems to want to work with reading back from file
+			addfeature("Fighting Style: Protection", 0, "When a creature you can see attacks a target other than you that is within 5 feet of you, you can use your reaction to impose disadvantage on the attack roll. You must be wielding a shield.");
 			break; 
 		case 6:
 			addfeature("Fighting Style: Two-Weapon Fighting", 0, "When you engage in two-weapon fighting, you can add your ability modifier to the damage of the second attack.");
@@ -2116,12 +2077,6 @@ void Player::classRoll(int rolls[], bool money) {
 		}
 		break;
 	case monk: //monk
-		adddex(rolls[0]);
-		addwis(rolls[1]);
-		addcon(rolls[2]);
-		addstr(rolls[3]);
-		addcha(rolls[4]);
-		addint(rolls[5]);
 		std::cout << "\nChoose Tool Proficiency:\n  Artisan Tool(1)\n  Instrument(2)" << endl;
 		selector = intValid(3);
 		switch (selector) {
@@ -2137,7 +2092,6 @@ void Player::classRoll(int rolls[], bool money) {
 		setssProf(0);
 		setssProf(1);
 		addfeature("Unarmored Defense", 0, "Beginning at 1st level, while you are wearing no armor and not wielding a shield, your AC equals 10 + your Dexterity modifier + your Wisdom modifier.(added)");
-		setac(10 + calcmod(getdex()) + calcmod(getwis()));
 		addfeature("Martial Arts", 0, "At 1st level, your practice of martial arts gives you mastery of combat styles that use unarmed strikes and monk weapons, which are shortswords and any simple melee weapons that don't have the two-handed or heavy property.\nYou gain the following benefits while you are unarmed or wielding only monk weapons and you aren't wearing armor or wielding a shield:\n* You can use Dexterity instead of Strength for the attack and damage rolls of your unarmed strikes and monk weapons.\n* You can roll a d4 in place of the normal damage of your unarmed strike or monk weapon. This die changes as you gain monk levels, as shown in the Martial Arts column of the Monk table.\n* When you use the Attack action with an unarmed strike or a monk weapon on your turn, you can make one unarmed strike as a bonus action. For example, if you take the Attack action and attack with a quarterstaff, you can also make an unarmed strike as a bonus action, assuming you haven't already taken a bonus action this turn.\nCertain monasteries use specialized forms of the monk weapons. For example, you might use a club that is two lengths of wood connected by a short chain(called a nunchaku) or a sickle with a shorter, straighter blade(called a kama). Whatever name you use for a monk weapon, you can use the game statistics provided for the weapon in chapter 5.");
 		if (money) {
 			addGp(dRoll(5, 4));
@@ -2169,13 +2123,6 @@ void Player::classRoll(int rolls[], bool money) {
 		}
 		break;
 	case paladin: //paladin
-		addcha(rolls[0]);
-		addstr(rolls[1]);
-		addcon(rolls[2]);
-		adddex(rolls[3]);
-		addwis(rolls[4]);
-		addint(rolls[5]);
-		setac(10 + calcmod(getdex()));
 		addfeature("All armor", 5);
 		addfeature("Shield", 5);
 		addfeature("Simple weapons", 4);
@@ -2183,7 +2130,6 @@ void Player::classRoll(int rolls[], bool money) {
 		setssProf(4);
 		setssProf(5);
 		addfeature("Divine Sense", 0, "The presence of strong evil registers on your senses like a noxious odor, and powerful good rings like heavenly music in your ears. As an action, you can open your awareness to detect such forces. Until the end of your next turn, you know the location of any celestial, fiend, or undead within 60 feet of you that is not behind total cover. You know the type(celestial, fiend, or undead) of any being whose presence you sense, but not its identity(the vampire Count Strahd von Zarovich, for instance). Within the same radius, you also detect the presence of any place or object that has been consecrated or desecrated, as with the hallow spell.\nYou can use this feature a number of times equal to 1 + your Charisma modifier. When you finish a long rest, you regain all expended uses.(added)");
-		addresource("Divine Sense", 1 + calcmod(getcha()), 2);
 		addfeature("Lay on Hands", 0, "Your blessed touch can heal wounds. You have a pool of healing power that replenishes when you take a long rest. With that pool, you can restore a total number of hit points equal to your paladin level x 5.\nAs an action, you can touch a creature and draw power from the pool to restore a number of hit points to that creature, up to the maximum amount remaining in your pool.\nAlternatively, you can expend 5 hit points from your pool of healing to cure the target of one disease or neutralize one poison affecting it. You can cure multiple diseases and neutralize multiple poisons with a single use of Lay on Hands, expending hit points separately for each one.\nThis feature has no effect on undead and constructs.(added)");
 		addresource("Lay on Hands", getLevel() * 5, 2);
 		if (money) {
@@ -2241,13 +2187,6 @@ void Player::classRoll(int rolls[], bool money) {
 		}
 		break;
 	case ranger: //ranger
-		adddex(rolls[0]);
-		addcon(rolls[1]);
-		addwis(rolls[2]);
-		addstr(rolls[3]);
-		addcha(rolls[4]);
-		addint(rolls[5]);
-		setac(10 + calcmod(getdex()));
 		addfeature("Light armor", 5);
 		addfeature("Medium armor", 5);
 		addfeature("Shield", 5);
@@ -2259,7 +2198,7 @@ void Player::classRoll(int rolls[], bool money) {
 		selector = intValid(15);
 		switch (selector) {
 		case 1:
-			addfeature("Favored Enemy: Aberrations \b", 0, "Beginning at 1st level, you have significant experience studying, tracking, hunting, and even talking to a certain type of enemy.\nChoose a type of favored enemy: aberrations, beasts, celestials, constructs, dragons, elementals, fey, fiends, giants, monstrosities, oozes, plants, or undead.\nAlternatively, you can select two races of humanoid(such as gnolls and orcs) as favored enemies.\nYou have advantage on Wisdom(Survival) checks to track your favored enemies, as well as on Intelligence checks to recall information about them.\nWhen you gain this feature, you also learn one language of your choice that is spoken by your favored enemies, if they speak one at all.(added)\nYou choose one additional favored enemy, as well as an associated language, at 6th and 14th level. As you gain levels, your choices should reflect the types of monsters you have encountered on your adventures."); // the \b is for strings that were size 26 which doesn't seems to want to work with reading back from file
+			addfeature("Favored Enemy: Aberrations", 0, "Beginning at 1st level, you have significant experience studying, tracking, hunting, and even talking to a certain type of enemy.\nChoose a type of favored enemy: aberrations, beasts, celestials, constructs, dragons, elementals, fey, fiends, giants, monstrosities, oozes, plants, or undead.\nAlternatively, you can select two races of humanoid(such as gnolls and orcs) as favored enemies.\nYou have advantage on Wisdom(Survival) checks to track your favored enemies, as well as on Intelligence checks to recall information about them.\nWhen you gain this feature, you also learn one language of your choice that is spoken by your favored enemies, if they speak one at all.(added)\nYou choose one additional favored enemy, as well as an associated language, at 6th and 14th level. As you gain levels, your choices should reflect the types of monsters you have encountered on your adventures.");
 			addfeature("Deep Speech", 3);
 			break;
 		case 2:
@@ -2481,13 +2420,6 @@ void Player::classRoll(int rolls[], bool money) {
 		}
 		break;
 	case rogue: //rogue
-		adddex(rolls[0]);
-		addwis(rolls[1]);
-		addcon(rolls[2]);
-		addint(rolls[3]);
-		addcha(rolls[4]);
-		addstr(rolls[5]);
-		setac(10 + calcmod(getdex()));
 		addfeature("Thieves' tools", 6);
 		addfeature("Light armor", 5);
 		addfeature("Simple weapons", 4);
@@ -2548,13 +2480,6 @@ void Player::classRoll(int rolls[], bool money) {
 		}
 		break;
 	case sorcerer: //sorcerer
-		addcha(rolls[0]);
-		adddex(rolls[1]);
-		addcon(rolls[2]);
-		addwis(rolls[3]);
-		addint(rolls[4]);
-		addstr(rolls[5]);
-		setac(10 + calcmod(getdex()));
 		addfeature("Dagger", 4);
 		addfeature("Dart", 4);
 		addfeature("Quarterstaff", 4);
@@ -2577,9 +2502,7 @@ void Player::classRoll(int rolls[], bool money) {
 				std::cout << "  " << Type1[i] << "(" << i + 1 << ")" << endl;
 			selector = intValid(11);
 			addfeature("Draconic Ancestor: " + Type1[selector - 1], 0, "At 1st level, you choose one type of dragon as your ancestor. The damage type associated with each dragon is used by features you gain later. You can speak, read, and write Draconic.(added) Additionally, whenever you make a Charisma check when interacting with dragons, your proficiency bonus is doubled if it applies to the check.");
-
 			addfeature("Draconic Resilience", 0, "As magic flows through your body, it causes physical traits of your dragon ancestors to emerge. At 1st level, your hit point maximum increases by 1 and increases by 1 again whenever you gain a level in this class.(added)\nAdditionally, parts of your skin are covered by a thin sheen of dragon-like scales. When you aren't wearing armor, your AC equals 13 + your Dexterity modifier.(added)");
-			setac(13 + calcmod(getdex()));
 			addmaxhp(1);
 			break;
 		case 2:
@@ -2649,13 +2572,6 @@ void Player::classRoll(int rolls[], bool money) {
 		}
 		break;
 	case warlock: //warlock
-		addcha(rolls[0]);
-		addcon(rolls[1]);
-		adddex(rolls[2]);
-		addwis(rolls[3]);
-		addstr(rolls[4]);
-		addint(rolls[5]);
-		setac(10 + calcmod(getdex()));
 		addfeature("Light armor", 5);
 		addfeature("Simple weapons", 4);
 		setssProf(4);
@@ -2669,7 +2585,7 @@ void Player::classRoll(int rolls[], bool money) {
 			addresource("Fey Presence", 1, 0);
 			break;
 		case 2:
-			addfeature("Otherworldly Patron: Fiend \b", 0); // the \b is for strings that were size 26 which doesn't seems to want to work with reading back from file
+			addfeature("Otherworldly Patron: Fiend", 0);
 			addfeature("Dark One's Blessing", 0, "Starting at 1st level, when you reduce a hostile creature to 0 hit points, you gain temporary hit points equal to your Charisma modifier + your warlock level(minimum of 1).");
 			break;
 		case 3:
@@ -2741,13 +2657,6 @@ void Player::classRoll(int rolls[], bool money) {
 		}
 		break;
 	case wizard: //wizard
-		addint(rolls[0]);
-		adddex(rolls[1]);
-		addcon(rolls[2]);
-		addwis(rolls[3]);
-		addstr(rolls[4]);
-		addcha(rolls[5]);
-		setac(10 + calcmod(getdex()));
 		addfeature("Dagger", 4);
 		addfeature("Dart", 4);
 		addfeature("Quarterstaff", 4);
@@ -2817,11 +2726,6 @@ void Player::classRoll(int rolls[], bool money) {
 		}
 		break;
 	}
-	setinit(calcmod(getdex()));
-	if (savingSkillsProf[17])
-		setpasper(10 + calcmod(getwis()) + profBonus());
-	else
-		setpasper(10 + calcmod(getwis()));
 }
 void Player::insertRace(int index) {
 	setType("Humanoid");
@@ -3202,15 +3106,392 @@ int Player::profBonus() {
 	int prof = (int)ceil((float)getLevel()/4.0f) + 1;
 	return prof;
 }
+void Player::AbiScoreMethod(int method) {
+	vector<int> tempstats = { 15, 14, 13, 12, 10, 8 };;
+	int i;
+	int point = 27;
+	int temp;
+	int selector;
+	vector<spellAbility> ScoreDecide = {STR,DEX,CON,INTEL,WIS,CHA};
+	switch(method) {
+	case 2: // randomize
+		for (i = 0; i < 6; i++) {
+			tempstats[i] = statrolls();
+		}
+		break;
+	case 3: //point-buy
+		std::cout << "\nAbility Score Point Cost:" << endl;
+		std::cout << "  Score\tCost\n  8\t0\n  9\t1\n  10\t2\n  11\t3\n  12\t4\n  13\t5\n  14\t7\n  15\t9" << endl;
+		i = 1;
+		while (i < 7) {
+			std::cout << "\nCurrent points: " << point << endl;
+			std::cout << "Enter desired ability score(" << i << "/6)" << endl;
+			selector = intValid(16, 8);
+			switch (selector) {
+			case 8:
+				temp = point;
+				break;
+			case 9:
+				temp = point - 1;
+				break;
+			case 10:
+				temp = point - 2;
+				break;
+			case 11:
+				temp = point - 3;
+				break;
+			case 12:
+				temp = point - 4;
+				break;
+			case 13:
+				temp = point - 5;
+				break;
+			case 14:
+				temp = point - 7;
+				break;
+			case 15:
+				temp = point - 9;
+				break;
+			default:
+				break;
+			}
+			if (temp >= 0) {
+				point = temp;
+				tempstats[i - 1] = selector;
+				i++;
+			}
+			else
+				std::cout << "Point cost exceeds remaining points..Choose again" << endl;
+		}
+		if (point != 0)
+			std::cout << "You still have leftover points..Please reallocate stats" << endl;
+		while (point != 0) {
+			bool valid = false;
+			std::cout << "\nCurrent points: " << point << endl;
+			std::cout << "Choose ability score to change:" << endl;
+			for (i = 0; i < 6; i++) {
+				std::cout << tempstats[i] << " ";
+			}
+			std::cout << endl;
+			selector = intValid(16, 8);
+			i = 0;
+			while(i < 6) {
+				if (tempstats[i] == selector) {
+					while (!valid) {
+						std::cout << "Change " << tempstats[i] << " to: " << endl;
+						selector = intValid(16, 8);
+						switch (tempstats[i]) {
+						case 8:
+							temp = point;
+							break;
+						case 9:
+							temp = point + 1;
+							break;
+						case 10:
+							temp = point + 2;
+							break;
+						case 11:
+							temp = point + 3;
+							break;
+						case 12:
+							temp = point + 4;
+							break;
+						case 13:
+							temp = point + 5;
+							break;
+						case 14:
+							temp = point + 7;
+							break;
+						case 15:
+							temp = point + 9;
+							break;
+						default:
+							break;
+						}
+						switch (selector) {
+						case 8:
+							break;
+						case 9:
+							temp -= 1;
+							break;
+						case 10:
+							temp -= 2;
+							break;
+						case 11:
+							temp -= 3;
+							break;
+						case 12:
+							temp -= 4;
+							break;
+						case 13:
+							temp -= 5;
+							break;
+						case 14:
+							temp -= 7;
+							break;
+						case 15:
+							temp -= 9;
+							break;
+						default:
+							break;
+						}
+						if (temp >= 0) {
+							point = temp;
+							tempstats[i] = selector;
+							valid = true;
+						}
+						else {
+							std::cout << "Point cost exceeds remaining points..Choose again" << endl;
+						}
+					}
+				}
+				i++;
+			}
+			if(!valid) {
+				std::cout << "Number not found..Enter a valid number"<< endl;
+			}
+		}
+		break;
+	default: //standard
+		break;
+	}
+	std::cout << "\nYour ability scores: " << endl;
+	for (i = 0; i < 6; i++) {
+		std::cout << tempstats[i] << " ";
+	}
+	std::cout << endl;
+	for (i = 0; i < 6; i++) {
+		std::cout << "\nChoose ability score to be set as " << tempstats[i] << ":" << endl;
+		for (unsigned int j = 0; j < ScoreDecide.size(); j++) {
+			switch (ScoreDecide[j]) {
+			case STR:
+				std::cout << "  STR(" << j + 1 << ")" << endl;
+				break;
+			case DEX:
+				std::cout << "  DEX(" << j + 1 << ")" << endl;
+				break;
+			case CON:
+				std::cout << "  CON(" << j + 1 << ")" << endl;
+				break;
+			case INTEL:
+				std::cout << "  INT(" << j + 1 << ")" << endl;
+				break;
+			case WIS:
+				std::cout << "  WIS(" << j + 1 << ")" << endl;
+				break;
+			case CHA:
+				std::cout << "  CHA(" << j + 1 << ")" << endl;
+				break;
+			}
+		}
+		selector = intValid(ScoreDecide.size() + 1);
+		switch (ScoreDecide[selector - 1]) {
+		case STR:
+			addstr(tempstats[i]);
+			break;
+		case DEX:
+			adddex(tempstats[i]);
+			break;
+		case CON:
+			addcon(tempstats[i]);
+			break;
+		case INTEL:
+			addint(tempstats[i]);
+			break;
+		case WIS:
+			addwis(tempstats[i]);
+			break;
+		case CHA:
+			addcha(tempstats[i]);
+			break;
+		}
+		ScoreDecide.erase(ScoreDecide.begin() + selector - 1);
+	}
+	/*
+	std::sort(tempstats.begin(), tempstats.end(), std::greater<int>());
+	switch (PCclass) {
+	case barbarian:
+		addstr(tempstats[0]);
+		addcon(tempstats[1]);
+		adddex(tempstats[2]);
+		addcha(tempstats[3]);
+		addwis(tempstats[4]);
+		addint(tempstats[5]);
+		break;
+	case bard:
+		addcha(tempstats[0]);
+		adddex(tempstats[1]);
+		addcon(tempstats[2]);
+		addwis(tempstats[3]);
+		addstr(tempstats[4]);
+		addint(tempstats[5]);
+		break;
+	case cleric:
+		addwis(tempstats[0]);
+		addcon(tempstats[1]);
+		addstr(tempstats[2]);
+		adddex(tempstats[3]);
+		addcha(tempstats[4]);
+		addint(tempstats[5]);
+		break;
+	case druid:
+		addwis(tempstats[0]);
+		adddex(tempstats[1]);
+		addcon(tempstats[2]);
+		addcha(tempstats[3]);
+		addint(tempstats[4]);
+		addstr(tempstats[5]);
+		break;
+	case fighter:
+		addstr(tempstats[0]);
+		addcon(tempstats[1]);
+		adddex(tempstats[2]);
+		addwis(tempstats[3]);
+		addcha(tempstats[4]);
+		addint(tempstats[5]);
+		break;
+	case monk:
+		adddex(tempstats[0]);
+		addwis(tempstats[1]);
+		addcon(tempstats[2]);
+		addstr(tempstats[3]);
+		addcha(tempstats[4]);
+		addint(tempstats[5]);
+		break;
+	case paladin:
+		addcha(tempstats[0]);
+		addstr(tempstats[1]);
+		addcon(tempstats[2]);
+		adddex(tempstats[3]);
+		addwis(tempstats[4]);
+		addint(tempstats[5]);
+		break;
+	case ranger:
+		adddex(tempstats[0]);
+		addcon(tempstats[1]);
+		addwis(tempstats[2]);
+		addstr(tempstats[3]);
+		addcha(tempstats[4]);
+		addint(tempstats[5]);
+		break;
+	case rogue:
+		adddex(tempstats[0]);
+		addwis(tempstats[1]);
+		addcon(tempstats[2]);
+		addint(tempstats[3]);
+		addcha(tempstats[4]);
+		addstr(tempstats[5]);
+		break;
+	case sorcerer:
+		addcha(tempstats[0]);
+		adddex(tempstats[1]);
+		addcon(tempstats[2]);
+		addwis(tempstats[3]);
+		addint(tempstats[4]);
+		addstr(tempstats[5]);
+		break;
+	case warlock:
+		addcha(tempstats[0]);
+		addcon(tempstats[1]);
+		adddex(tempstats[2]);
+		addwis(tempstats[3]);
+		addstr(tempstats[4]);
+		addint(tempstats[5]);
+		break;
+	case wizard:
+		addint(tempstats[0]);
+		adddex(tempstats[1]);
+		addcon(tempstats[2]);
+		addwis(tempstats[3]);
+		addstr(tempstats[4]);
+		addcha(tempstats[5]);
+		break;
+	}
+	*/
+}
+void Player::calcStatFeatures() {
+	unordered_set<Feature>::iterator it;
+	switch (PCclass) {
+	case barbarian:
+		setac(10 + calcmod(getdex()) + calcmod(getcon()));
+		break;
+	case bard:
+		setac(10 + calcmod(getdex()));
+		addresource("Bardic Inspiration", calcmod(getcha()), 2);
+		break;
+	case cleric:
+		setac(10 + calcmod(getdex()));
+		it = find_if(classfeatures.begin(), classfeatures.end(), find_by_name<Feature>("Warding Flare"));
+		if (it != classfeatures.end()) {
+			addresource("Warding Flare", calcmod(getwis()), 2);
+		}
+		it = find_if(classfeatures.begin(), classfeatures.end(), find_by_name<Feature>("Wrath of the Storm"));
+		if (it != classfeatures.end()) {
+			addresource("Wrath of the Storm", calcmod(getwis()), 2);
+		}
+		it = find_if(classfeatures.begin(), classfeatures.end(), find_by_name<Feature>("War Priest"));
+		if (it != classfeatures.end()) {
+			addresource("War Priest", calcmod(getwis()), 2);
+		}
+		break;
+	case druid:
+		setac(10 + calcmod(getdex()));
+		break;
+	case fighter:
+		setac(10 + calcmod(getdex()));
+		break;
+	case monk:
+		setac(10 + calcmod(getdex()) + calcmod(getwis()));
+		break;
+	case paladin:
+		setac(10 + calcmod(getdex()));
+		addresource("Divine Sense", 1 + calcmod(getcha()), 2);
+		break;
+	case ranger:
+		setac(10 + calcmod(getdex()));
+		break;
+	case rogue:
+		setac(10 + calcmod(getdex()));
+		break;
+	case sorcerer:
+		setac(10 + calcmod(getdex()));
+		it = find_if(classfeatures.begin(), classfeatures.end(), find_by_name<Feature>("Draconic Resilience"));
+		if (it != classfeatures.end()) {
+			setac(13 + calcmod(getdex()));
+		}
+		break;
+	case warlock:
+		setac(10 + calcmod(getdex()));
+		break;
+	case wizard:
+		setac(10 + calcmod(getdex()));
+		break;
+	}
+	calcmaxHP();
+	setinit(calcmod(getdex()));
+	if (savingSkillsProf[17])
+		setpasper(10 + calcmod(getwis()) + profBonus());
+	else
+		setpasper(10 + calcmod(getwis()));
+}
 void Player::setstats() {
 	int selector = 0;
 	int tempstats[6];
-	int i;
 	bool money = false;
 	std::cout << "Enter name: ";
 	std::cin.ignore();
 	std::getline(std::cin, name);
 	level = 1;
+	setstr(0);
+	setdex(0);
+	setcon(0);
+	setint(0);
+	setwis(0);
+	setcha(0);
+
+	std::cout << "\nChoose ability score distribution method:\n  Standard Array(1)\n  Random Roll(2)\n  Point-Buy(3)" << endl;
+	selector = intValid(4);
+	AbiScoreMethod(selector);
 
 	std::cout << "\nStart with starter gear or money? Gear(1) Money(2)" << endl;
 	selector = intValid(3);
@@ -3226,9 +3507,6 @@ void Player::setstats() {
 	std::cout << "\nChoose a class:\n  Barbarian(1)\n  Bard(2)\n  Cleric(3)\n  Druid(4)\n  Fighter(5)\n  Monk(6)\n  Paladin(7)\n  Ranger(8)\n  Rogue(9)\n  Sorcerer(10)\n  Warlock(11)\n  Wizard(12)" << endl;
 	selector = intValid(13);
 	PCclass = (classes)(selector - 1);
-	for (i = 0; i < 6; i++) {
-		tempstats[i] = statrolls();
-	}
 	classRoll(tempstats, money);
 	selector = 0;
 
@@ -3248,6 +3526,7 @@ void Player::setstats() {
 	selector = 0;
 	classSkill();
 	featAdder();
+	calcStatFeatures();
 	classSpells();
 
 	std::cout << "\nEnter age: ";
@@ -3280,11 +3559,6 @@ void Player::setstats() {
 	if (skin.size() > 140)
 		skin.resize(140);
 
-	std::cout << "\nRolled: ";
-	for (i = 0; i < 6; i++) {
-		std::cout << tempstats[i] << " ";
-	}
-	calcmaxHP();
 	std::cout << "\n\nMAXHP: " << getmaxhp();
 	std::cout << "\nSTR: " << getstr();
 	std::cout << "\nDEX: " << getdex();

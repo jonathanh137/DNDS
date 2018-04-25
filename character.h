@@ -93,7 +93,6 @@ public:
 	void addcha(int);
 	void addresource(string, int, int, int = 0);
 	bool addfeature(string, int = 0, string = {});
-	//bool addfeature(string, int = 0);
 	void delfeature(string, int);
 	//void addfeats();
 	void addWeaponProf(int = 1);

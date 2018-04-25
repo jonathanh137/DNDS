@@ -72,6 +72,8 @@ public:
 	void refCarry();
 	int calcMaxCarry();
 	int profBonus();
+	void AbiScoreMethod(int);
+	void calcStatFeatures();
 	void setstats();
 	void listfeatures();
 	void displaystats();
